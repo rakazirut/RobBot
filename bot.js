@@ -44,8 +44,12 @@ client.on('message', async message => {
 
     if (command === 'cat') {
         const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
+        const embed = new MessageEmbed()
+            .setColor('#EC805B')
+            .setTitle("Cats bro")
+            .setImage(file)
 
-        message.channel.send(file);
+        message.channel.send(embed);
     } 
 
     else if (command === 'urban') {
@@ -82,6 +86,10 @@ client.on('message', async message => {
 
     else if (command === 'rob'){
         return message.channel.send('..kids not a fag!');
+    }
+
+    else if (command === 'goodbot'){
+        return message.channel.send(`Thanks, Dad! :slight_smile:`);
     }
 
     else if (command === 'meme'){
