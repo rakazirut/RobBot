@@ -1,6 +1,9 @@
 const logger = require('winston');
 const auth = require('./auth.json');
 const Discord = require('discord.js');
+const cat = require('./cat.js');
+const kanye = require('./kanye.js');
+const drink = require('./drink.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
@@ -43,13 +46,7 @@ client.on('message', async message => {
     const command = args.shift().toLowerCase();
 
     if (command === 'cat') {
-        const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
-        const embed = new MessageEmbed()
-            .setColor('#EC805B')
-            .setTitle("Cats bro")
-            .setImage(file)
-
-        message.channel.send(embed);
+        cat(message);
     } 
 
     else if (command === 'urban') {
@@ -155,33 +152,11 @@ client.on('message', async message => {
     }
 
     else if (command === 'drink'){
-        const data = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/random.php`).then(response => response.json());
-
-        const embed = new MessageEmbed()
-            .setColor('#005072')
-            .setDescription(`..lets get drunk bruh`)
-            .setTitle(data.drinks[0].strDrink)
-            .setImage(data.drinks[0].strDrinkThumb)
-            .setURL('https://www.thecocktaildb.com/drink.php?c='+data.drinks[0].idDrink)
-            .addFields(
-                { name: 'Category?', value: data.drinks[0].strCategory },
-                { name: 'Alcoholic?', value: data.drinks[0].strAlcoholic },
-                { name: 'Glass?', value: data.drinks[0].strGlass }
-
-            );
-        message.channel.send(embed)  
+        drink(message);
     }
 
     else if (command === 'kanye'){
-        const data = await fetch(`https://api.kanye.rest`).then(response => response.json());
-
-        const embed = new MessageEmbed()
-            .setColor('#FFFFFF')
-            .setDescription(data.quote)
-            .setTitle(`Things Kanye says..`)
-            .setImage('https://pngimage.net/wp-content/uploads/2018/06/kanye-west-head-png-5.png')
-
-        message.channel.send(embed)
+        kanye(message);
     }
 });
 
