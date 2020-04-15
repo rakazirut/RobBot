@@ -1,9 +1,11 @@
 const logger = require('winston');
 const auth = require('./auth.json');
 const Discord = require('discord.js');
-const cat = require('./cat.js');
-const kanye = require('./kanye.js');
-const drink = require('./drink.js');
+const cat = require('./helpers/cat.js');
+const kanye = require('./helpers/kanye.js');
+const drink = require('./helpers/drink.js');
+const com = require('./helpers/command.js');
+const meme = require('./helpers/mymeme.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
@@ -90,16 +92,7 @@ client.on('message', async message => {
     }
 
     else if (command === 'meme'){
-        const file  = await fetch('https://meme-api.herokuapp.com/gimme').then(response => response.json());
-        const embed = new MessageEmbed()
-            .setColor('#220F38')
-            .setTitle(file.title)
-            .setURL(file.postLink)
-            .setImage(file.url)
-            .addFields(
-                { name: 'Subreddit', value: file.subreddit }
-            );
-        message.channel.send(embed) 
+        meme(message);
     }
 
     else if (command === 'twitch'){
@@ -135,20 +128,7 @@ client.on('message', async message => {
     }
 
     else if (command === 'command'){
-        const embed = new MessageEmbed()
-            .setColor('#EFFF00')
-            .setDescription(`Some of the things I can do`)
-            .setTitle('RobBot Commands')
-            .addFields(
-                { name: 'Is Rob a fag?', value: 'ex: !rob' },
-                { name: 'Is Tom a fag?', value: 'ex: !tom' },
-                { name: 'Cats, bro.', value: 'ex: !cat' },
-                { name: 'Look up what words mean.', value: 'ex: !urban bluewaffle' },
-                { name: 'Any lit streams?', value: 'ex: !twitch lirik' },
-                { name: 'WWKS?', value: 'ex: !kanye' },
-                { name: 'Get drunk?', value: 'ex: !drink' }
-            );
-        message.channel.send(embed)
+        com(message);
     }
 
     else if (command === 'drink'){
