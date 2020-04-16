@@ -1,7 +1,7 @@
 const got = require('got');
 const Discord = require('discord.js');
 
-module.exports = function cat(message) {
+module.exports = function meme(message) {
     const embed = new Discord.MessageEmbed();
     got('https://meme-api.herokuapp.com/gimme').then(response => {
         let file = JSON.parse(response.body);

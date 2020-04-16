@@ -6,6 +6,7 @@ const kanye = require('./helpers/kanye.js');
 const drink = require('./helpers/drink.js');
 const com = require('./helpers/command.js');
 const meme = require('./helpers/mymeme.js');
+const bpt = require('./helpers/bpt.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
@@ -137,6 +138,10 @@ client.on('message', async message => {
 
     else if (command === 'kanye'){
         kanye(message);
+    }
+
+    else if (command === 'bpt'){
+        bpt(message);
     }
 });
 
