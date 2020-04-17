@@ -88,6 +88,10 @@ client.on('message', async message => {
         return message.channel.send('..kids not a fag!');
     }
 
+    else if (command === 'connor'){
+        return message.channel.send('..not entirely sure, might be a fag.');
+    }
+
     else if (command === 'goodbot'){
         return message.channel.send(`Thanks, Dad! :slight_smile:`);
     }
@@ -103,7 +107,7 @@ client.on('message', async message => {
 
         const query = args.join(' ')
         const { data }  = await fetch(`https://api.twitch.tv/helix/streams?client_id=`+auth.twitch_client_id+`&user_login=${query}`, {method: 'GET', headers: headers}).then(response => response.json());
-        
+
         if (!data.length) {
             return message.channel.send('Streamer is not live: '+query+'.');
         }
