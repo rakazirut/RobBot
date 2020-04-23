@@ -7,6 +7,7 @@ const drink = require('./helpers/drink.js');
 const com = require('./helpers/command.js');
 const meme = require('./helpers/mymeme.js');
 const bpt = require('./helpers/bpt.js');
+const wcgw = require('./helpers/wcgw.js')
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
@@ -163,6 +164,10 @@ client.on('message', async message => {
 
     else if (command === 'bpt'){
         bpt(message);
+    }
+
+    else if (command === 'wcgw'){
+        wcgw(message);
     }
 });
 
