@@ -10,7 +10,9 @@ const bpt = require('./helpers/bpt.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-const got = require('got');
+const queryOnline = [];
+const queryOffline = [];
+
 
 // Initalize the discord client instance
     const client = new Discord.Client();
@@ -20,7 +22,8 @@ const got = require('got');
 
 // Used for the twitch requests that require client_ud header
     const headers = {
-        "Client-ID": auth.twitch_client_id
+        "Client-ID": auth.twitch_client_id,
+        "Authorization": `Bearer `+auth.twitch_bearer_token
     }
 
 // Used to trim the urban dictionary results
@@ -38,20 +41,23 @@ const got = require('got');
     });
     logger.level = 'debug';
 
+// client establishes connection and is listening for events/commands
     client.on('ready', function (evt) {
         logger.info('Connected as ' + auth.discord_client_id);
         client.user.setActivity('!command', {type: 'PLAYING'});
     });
 
+// if a command is entered, the bot will respond accordingly
     client.on('message', async message => {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        if (!message.content.startsWith(prefix) || message.author.bot) return;  //if the command is entered, but is not recognized  or is sent by the bot, do nothing
 
-        const args = message.content.slice(prefix.length).split(/ +/);
-        const command = args.shift().toLowerCase();
+        const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
+        const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
 
         if (command === 'cat') {
             cat(message);
-        } else if (command === 'urban') {
+        }
+        else if (command === 'urban') {
             if (!args.length) {
                 return message.channel.send('You need to supply a search term!');
             }
@@ -87,7 +93,8 @@ const got = require('got');
             return message.channel.send(`Thanks, Dad! :slight_smile:`);
         } else if (command === 'meme') {
             meme(message);
-        } else if (command === 'twitch') {
+        }
+        else if (command === 'twitch') {
             if (!args.length) {
                 return message.channel.send('You need to supply a search term!');
             }
@@ -129,7 +136,8 @@ const got = require('got');
                     {name: 'View Count', value: stream.viewer_count}
                 );
             message.channel.send(embed)
-        } else if (command === 'command') {
+        }
+        else if (command === 'command') {
             com(message);
         } else if (command === 'drink') {
             drink(message);
@@ -140,51 +148,70 @@ const got = require('got');
         }
         else if (command === 'loop'){
             console.log('ok.')
+
             var interval = setInterval (async function a() {
-                const queryStr = ['lirik', 'Quin69', 'timthetatman']
+                // The streamers we are checking for
+                const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'quin69', 'drdisrespect',
+                'moonmoon']
+                // loop every minute to check the status of the streamers
                 for(i = 0; i< queryStr.length; i++) {
                     const query = queryStr[i]
                     const {data} = await fetch(`https://api.twitch.tv/helix/streams?client_id=` + auth.twitch_client_id + `&user_login=${query}`, {
                         method: 'GET',
                         headers: headers
                     }).then(response => response.json());
-
-                    if (!data.length) {
-                        return message.channel.send('Streamer is not live: ' + query + '.');
+                    //log current status of streams
+                    console.log(queryOnline+' online')
+                    console.log(queryOffline+' offline')
+                    //IF no data return(user offline) and they are not in the offline array, add them to offline array)
+                    if (!data.length && queryOffline.includes(query)===false) {
+                        queryOffline.push(query)
+                        if (queryOnline.includes(query) === true) { //if a user in this state was previously online, remove them from online array
+                            rIndex = queryOnline.indexOf(query)
+                            queryOnline.splice(rIndex, 1)
+                        }
                     }
+                    //IF data returned(user online) and they are not in the online array, post the new content
+                    if(data.length && queryOnline.includes(query)===false) {
+                        const [stream] = data;
+                        const gameID = stream.game_id;
+                        const game = await fetch(`https://api.twitch.tv/helix/games?id=${gameID}`, {
+                            method: 'GET',
+                            headers: headers
+                        }).then(response => response.json());
 
-                    const [stream] = data;
-                    const gameID = stream.game_id;
-                    const game = await fetch(`https://api.twitch.tv/helix/games?id=${gameID}`, {
-                        method: 'GET',
-                        headers: headers
-                    }).then(response => response.json());
+                        var strinng = game.data[0].box_art_url.slice(0, game.data[0].box_art_url.lastIndexOf('-')) + '.jpg';
 
-                    var strinng = game.data[0].box_art_url.slice(0, game.data[0].box_art_url.lastIndexOf('-')) + '.jpg';
-
-                    if (strinng.includes("/./")){
-                        strinng = strinng.replace("/./", "/" )
+                        if (strinng.includes("/./")) {
+                            strinng = strinng.replace("/./", "/")
+                        }
+                        var string = strinng.split(' ').join('%20')
+                        console.log(string)
+                        const embed = new MessageEmbed()
+                            .setColor('#F687B3')
+                            .setDescription(`:red_circle: **${query} is currently live on Twitch!**`)
+                            .setTitle(stream.title)
+                            .setURL('https://www.twitch.tv/' + query)
+                            .setImage(string)
+                            .addFields(
+                                {name: 'Streamer', value: stream.user_name},
+                                {name: 'Game', value: game.data[0].name},
+                                {name: 'View Count', value: stream.viewer_count}
+                            );
+                        message.channel.send(embed)
+                        //add user to online array so we don't post content again until status has changed
+                        queryOnline.push(query)
+                        //remove user from offline array since they are online
+                        if(queryOffline.includes(query)===true){
+                            rIndex = queryOffline.indexOf(query)
+                            queryOffline.splice(rIndex,1)
+                        }
+                        await new Promise(r => setTimeout(r, 50));
+                    } else{ //IF user is in either array, and no status has changed, do nothing
+                        console.log('-')
                     }
-
-                    var string = strinng.split(' ').join('%20')
-                    console.log(string)
-                    const embed = new MessageEmbed()
-                        .setColor('#F687B3')
-                        .setDescription(`:red_circle: **${query} is currently live on Twitch!**`)
-                        .setTitle(stream.title)
-                        .setURL('https://www.twitch.tv/' + query)
-                        .setImage(string)
-                        .addFields(
-                            {name: 'Streamer', value: stream.user_name},
-                            {name: 'Game', value: game.data[0].name},
-                            {name: 'View Count', value: stream.viewer_count}
-                        );
-                    message.channel.send(embed)
-                    await new Promise(r => setTimeout(r, 20000));
                 }
-            }, 900000);
+            }, 60000);
         }
-
     });
-
 client.login(auth.token);
