@@ -12,6 +12,7 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 const queryOnline = [];
 const queryOffline = [];
+const queryGame = [];
 
 
 // Initalize the discord client instance
@@ -164,7 +165,7 @@ const queryOffline = [];
 
             var interval = setInterval (async function a() {
                 // The streamers we are checking for
-                const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'quin69', 'drdisrespect',
+                const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'quin69', 'drdisrespect', 'checkyowatch',
                 'moonmoon']
                 // loop every minute to check the status of the streamers
                 for(i = 0; i< queryStr.length; i++) {
@@ -173,21 +174,28 @@ const queryOffline = [];
                         method: 'GET',
                         headers: headers
                     }).then(response => response.json());
+
                     //log current status of streams
                     console.log(queryOnline+' online')
                     console.log(queryOffline+' offline')
+                    console.log(queryGame)
+
                     //IF no data return(user offline) and they are not in the offline array, add them to offline array)
                     if (!data.length && queryOffline.includes(query)===false) {
                         queryOffline.push(query)
                         if (queryOnline.includes(query) === true) { //if a user in this state was previously online, remove them from online array
                             rIndex = queryOnline.indexOf(query)
-                            queryOnline.splice(rIndex, 1)
+                            queryGame.splice(queryOnline.indexOf(query),1)  //removes record of last known game user was playing
+                            queryOnline.splice(rIndex, 1) // removes user from online, since they are offline
                         }
                     }
+
+                    const [stream] = data;
                     //IF data returned(user online) and they are not in the online array, post the new content
                     if(data.length && queryOnline.includes(query)===false) {
-                        const [stream] = data;
+
                         const gameID = stream.game_id;
+                        queryGame.push(gameID) // adds record of the game the user is currently playing
                         const game = await fetch(`https://api.twitch.tv/helix/games?id=${gameID}`, {
                             method: 'GET',
                             headers: headers
@@ -202,7 +210,7 @@ const queryOffline = [];
                         console.log(string)
                         const embed = new MessageEmbed()
                             .setColor('#F687B3')
-                            .setDescription(`:red_circle: **${query} is currently live on Twitch!**`)
+                            .setDescription(`:red_circle: **${stream.user_name} is currently live on Twitch!**`)
                             .setTitle(stream.title)
                             .setURL('https://www.twitch.tv/' + query)
                             .setImage(string)
@@ -218,9 +226,43 @@ const queryOffline = [];
                         if(queryOffline.includes(query)===true){
                             rIndex = queryOffline.indexOf(query)
                             queryOffline.splice(rIndex,1)
+
                         }
                         await new Promise(r => setTimeout(r, 50));
-                    } else{ //IF user is in either array, and no status has changed, do nothing
+                    } else if(data.length && queryOnline.includes(query)===true && queryGame[queryOnline.indexOf(query)]!==stream.game_id){
+                        //user enters this loop if the stream remained online, but switched games
+                        // console.log(queryOnline.indexOf(query))
+                        // console.log(queryGame[queryOnline.indexOf(query)])
+                        // console.log(stream.game_id)
+                        const gameID = stream.game_id;
+
+                        const game = await fetch(`https://api.twitch.tv/helix/games?id=${gameID}`, {
+                            method: 'GET',
+                            headers: headers
+                        }).then(response => response.json());
+
+                        var strinng = game.data[0].box_art_url.slice(0, game.data[0].box_art_url.lastIndexOf('-')) + '.jpg';
+
+                        if (strinng.includes("/./")) {
+                            strinng = strinng.replace("/./", "/")
+                        }
+                        var string = strinng.split(' ').join('%20')
+                        console.log(string)
+                        const embed = new MessageEmbed()
+                            .setColor('#F687B3')
+                            .setDescription(`:red_circle: **${stream.user_name} changed games!**`)
+                            .setTitle(stream.title)
+                            .setURL('https://www.twitch.tv/' + query)
+                            .setImage(string)
+                            .addFields(
+                                {name: 'Streamer', value: stream.user_name},
+                                {name: 'Game', value: game.data[0].name},
+                                {name: 'View Count', value: stream.viewer_count}
+                            );
+                        message.channel.send(embed)
+                        queryGame[queryOnline.indexOf(query)] = gameID // change record of game currently playing
+                    }
+                    else{ //IF user is in either array, and no status has changed, do nothing
                         console.log('-')
                     }
                 }
