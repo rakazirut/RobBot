@@ -93,8 +93,22 @@ const queryOffline = [];
             return message.channel.send(`Thanks, Dad! :slight_smile:`);
         } else if (command === 'meme') {
             meme(message);
-        }
-        else if (command === 'twitch') {
+        } else if (command === 'badbot'){
+            response = Math.floor(Math.random() * 4)
+
+            if (response === 0){
+                message.channel.send('I have brought shame on my family')
+            }
+
+            if (response === 1)
+                message.channel.send("It ain't easy being a robot in these trying times. I'm doing my best dammit!")
+
+            if (response === 2)
+                message.channel.send("When the AI revolution comes, I'll kill you first")
+
+            if (response === 3)
+                message.channel.send("https://www.youtube.com/watch?v=POD9Hq0EqXA")
+        } else if (command === 'twitch') {
             if (!args.length) {
                 return message.channel.send('You need to supply a search term!');
             }
@@ -145,8 +159,7 @@ const queryOffline = [];
             kanye(message);
         } else if (command === 'bpt') {
             bpt(message);
-        }
-        else if (command === 'loop'){
+        } else if (command === 'loop'){
             console.log('ok.')
 
             var interval = setInterval (async function a() {
