@@ -13,7 +13,7 @@ const querystring = require('querystring');
 const queryOnline = [];
 const queryOffline = [];
 const queryGame = [];
-
+let i = 0;
 
 // Initalize the discord client instance
     const client = new Discord.Client();
@@ -50,7 +50,21 @@ const queryGame = [];
 
 // if a command is entered, the bot will respond accordingly
     client.on('message', async message => {
+        //if a message contains a instance of word 'game' and is a multiple of 5 relative to i, post auto response
+        // why?
+        if (!message.content.startsWith(prefix) && message.content.includes('game')){
+            console.log(i)
+            if(i%5===0){
+                i++;
+                return message.channel.send(`I failed gym class 3 times 'cause I don't play no games!`);
+            } else{
+                i++;
+                return;
+            }
+
+        }
         if (!message.content.startsWith(prefix) || message.author.bot) return;  //if the command is entered, but is not recognized  or is sent by the bot, do nothing
+
 
         const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
         const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
@@ -165,7 +179,7 @@ const queryGame = [];
 
             var interval = setInterval (async function a() {
                 // The streamers we are checking for
-                const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'quin69', 'drdisrespect', 'checkyowatch',
+                const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'sodapoppin', 'quin69', 'drdisrespect', 'checkyowatch',
                 'moonmoon']
                 // loop every minute to check the status of the streamers
                 for(i = 0; i< queryStr.length; i++) {
@@ -191,7 +205,7 @@ const queryGame = [];
                     }
 
                     const [stream] = data;
-                    //IF data returned(user online) and they are not in the online array, post the new content
+                    //If data returned(user online) and they are not in the online array, post the new content
                     if(data.length && queryOnline.includes(query)===false) {
 
                         const gameID = stream.game_id;
