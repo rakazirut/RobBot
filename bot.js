@@ -174,7 +174,190 @@ let i = 0;
             kanye(message);
         } else if (command === 'bpt') {
             bpt(message);
-        } else if (command === 'loop'){
+        }
+        //Start D3 specific commands
+        else if (command === 'account'){
+            if (!args.length) {
+                return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
+            }
+            var query = args.join(' ');
+            query = query.replace("#", "%23")
+            const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=`+auth.blizzard_access_token
+            ).then(response => response.json());
+            var resp = []
+            var lastPlayed
+            for(i=0;i<data.heroes.length;i++){
+                var id = data.heroes[i].id
+                resp.push(data.heroes[i].name)
+                if(id === data.lastHeroPlayed){
+                    lastPlayed = data.heroes[i].name
+                }
+
+            }
+            const embed = new MessageEmbed()
+                .setColor('#FF0000')
+                .setDescription(`Account Info`)
+                .setTitle(data.battleTag)
+                .addFields(
+                    {name: 'Overall HC Paragon:', value: data.paragonLevelHardcore},
+                    {name: 'Current Season HC Paragon:', value: data.paragonLevelSeasonHardcore},
+                    {name: 'Total Kills:', value:
+                            `Softcore: `+data.kills.monsters+`\n`+
+                            `Hardcore: `+data.kills.hardcoreMonsters+`\n`+
+                            `Elites: `+data.kills.elites
+                    },
+                    {name: 'Heroes:', value: resp},
+                    {name: 'Last Played Hero:', value: lastPlayed}
+                    )
+
+            return message.channel.send(embed)
+        }
+        else if (command === 'hero') {
+            if (!args.length) {
+                return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
+            }
+            var queryOne = args.join(' ')
+            qStr = queryOne.split(' ')
+            query = qStr[0].replace("#", "%23")
+            const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + auth.blizzard_access_token
+            ).then(response => response.json());
+
+
+            for(i=0;i<data.heroes.length;i++){
+                if(data.heroes[i].name === qStr[1]){
+                    var hId = data.heroes[i].id
+                    const hero = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/hero/${hId}?locale=en_US&access_token=`+auth.blizzard_access_token
+                    ).then(response => response.json());
+                    const embed = new MessageEmbed()
+                        .setColor('#FF0000')
+                        .setDescription(data.battleTag+` Hero`)
+                        .setTitle(hero.name)
+                        .addFields(
+                            {name: 'Class:', value: hero.class},
+                            {name: 'Paragon Level:', value: hero.paragonLevel},
+                            {name: 'Highest Solo GR:', value: hero.highestSoloRiftCompleted},
+                            {name: 'Gear:', value: `**Helm:** `+hero.items.head.name+`\n`+
+                                                   `**Amulet:** ` +hero.items.neck.name+`\n`+
+                                                   `**Chest:** `+hero.items.torso.name+`\n`+
+                                                   `**Shoulder:** `+hero.items.shoulders.name+`\n`+
+                                                   `**Leg:** `+hero.items.legs.name+`\n`+
+                                                   `**Belt:** `+hero.items.waist.name+`\n`+
+                                                   `**Gloves:** `+hero.items.hands.name+`\n`+
+                                                   `**Bracers:** ` +hero.items.bracers.name+`\n`+
+                                                   `**Boots:** `+hero.items.feet.name+`\n`+
+                                                   `**Rings:** `+hero.items.leftFinger.name+` **||** `+hero.items.rightFinger.name+`\n`+
+                                                   `**Main Hand:** `+hero.items.mainHand.name+`\n`+
+                                                   `**Off Hand:** `+hero.items.offHand.name
+                            },
+                            {name: 'Active Skills:',
+                                value:
+                                    hero.skills.active[0].skill.name+ ' - ' +hero.skills.active[0].rune.name+`\n`+
+                                    hero.skills.active[1].skill.name+ ' - ' +hero.skills.active[1].rune.name+`\n`+
+                                    hero.skills.active[2].skill.name+ ' - ' +hero.skills.active[2].rune.name+`\n`+
+                                    hero.skills.active[3].skill.name+ ' - ' +hero.skills.active[3].rune.name+`\n`+
+                                    hero.skills.active[4].skill.name+ ' - ' +hero.skills.active[4].rune.name+`\n`+
+                                    hero.skills.active[5].skill.name+ ' - ' +hero.skills.active[5].rune.name
+
+                            },
+                            {name: 'Passive Skills:',
+                                value:
+                                    hero.skills.passive[0].skill.name+`\n`+
+                                    hero.skills.passive[1].skill.name+`\n`+
+                                    hero.skills.passive[2].skill.name+`\n`+
+                                    hero.skills.passive[3].skill.name
+                            }
+
+
+                        );
+                    message.channel.send(embed)
+                    return
+                }
+                else if(data.heroes[i].name !== qStr[1]){
+                    console.log('-')
+                }
+
+
+            }
+            message.channel.send(`Hero not found!`);
+        }
+        if(command === 'hcl'){
+            if (!args.length) {
+                return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
+            }
+            var queryOne = args.join(' ')
+            qStr = queryOne.split(' ')
+            query = qStr[0].replace("#", "%23")
+            var charClass
+
+            const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=`+auth.blizzard_access_token
+            ).then(response => response.json());
+
+            if(data.code === 'NOTFOUND'){
+                return message.channel.send(`Account not found!`)
+            }
+
+
+            for(i=0;i<data.heroes.length;i++){
+                if(data.heroes[i].name === qStr[1]){
+                    charClass = data.heroes[i].class
+                }
+                else if(data.heroes[i].name !== qStr[1]){
+                    console.log('-')
+                }
+                else{
+                   return message.channel.send(`Hero not found!`)
+                }
+
+            }
+
+            switch(charClass){
+                case "witch-doctor":
+                    charClass = 'wd'
+                    break
+                case "demon-hunter":
+                    charClass = 'dh'
+                    break
+                default:
+                    break
+            }
+            const lbd = await fetch(`https://us.api.blizzard.com/data/d3/season/${qStr[2]}/leaderboard/rift-hardcore-${charClass}?access_token=` + auth.blizzard_access_token
+            ).then(response => response.json());
+            for(i=0;i<lbd.row.length;i++){
+                if(lbd.row[i].player[0].data[0].string === qStr[0]){
+
+                    const embed = new MessageEmbed()
+                        .setColor('#FF0000')
+                        .setDescription(lbd.title.en_US)
+                        .setTitle(`Hardcore Season ${qStr[2]} Leaderboard`)
+                        .addFields(
+                            {name: 'Hero:', value: qStr[1]},
+                            {name: 'Rank:', value: lbd.row[i].data[0].number},
+                            {name: 'Rift Level:', value: lbd.row[i].data[1].number}
+                            )
+                    return message.channel.send(embed)
+
+                }
+            }
+        }
+        else if(command === 'd3'){
+            const embed = new MessageEmbed()
+                .setColor('#FF0000')
+                .setDescription('Specialized functions related to D3 Hardcore Seasonal')
+                .setTitle(`Diablo 3 Commands`)
+                .addFields(
+                    {name: '!account:', value: `Returns information related to the user account.\n`+
+                                                        `**Example:** !account WhiskeyRomeo#1730`},
+                    {name: '!hero:', value: 'Returns information related to the specified hero for an account.\n' +
+                                            `**Example:** !hero WhiskeyRomeo#1730 BackClapper`},
+                    {name: '!hcl:', value: `Returns (if applicable) the Solo GR Leaderboard position for the specified hero and season.\n` +
+                                            `**Example:** !hcl WhiskeyRomeo#1730 BackClapper 20`}
+                )
+            return message.channel.send(embed)
+        }
+        //End D3 specific commands
+
+        //Start Twitch loop
+        else if (command === 'loop'){
             console.log('ok.')
 
             var interval = setInterval (async function a() {

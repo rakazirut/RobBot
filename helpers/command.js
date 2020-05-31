@@ -12,7 +12,10 @@ module.exports = function command(message) {
             { name: 'Look up what words mean.', value: 'ex: !urban bluewaffle' },
             { name: 'Any lit streams?', value: 'ex: !twitch lirik' },
             { name: 'WWKS?', value: 'ex: !kanye' },
-            { name: 'Get drunk?', value: 'ex: !drink' }
+            { name: 'BlackPeopleTwitter', value: 'ex: !bpt' },
+            { name: 'Memes', value: 'ex: !meme' },
+            { name: 'Get drunk?', value: 'ex: !drink' },
+            { name: 'Diablo 3 Command Info', value: 'ex: !d3' }
         );
     message.channel.send(embed)
 }
