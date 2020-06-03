@@ -7,15 +7,19 @@ const drink = require('./helpers/drink.js');
 const com = require('./helpers/command.js');
 const meme = require('./helpers/mymeme.js');
 const bpt = require('./helpers/bpt.js');
+const yt = require('./helpers/yt.js');
+const bbot = require('./helpers/bbot.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
+
 const queryOnline = [];
 const queryOffline = [];
 const queryGame = [];
 let i = 0;
 var blizz_auth;
 
+// Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
     return new Promise((resolve, reject) => {
         let credentials = Buffer.from(`${apiKey}:${apiSecret}`);
@@ -39,7 +43,7 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
             res.on('end', () => {
                 let data = JSON.parse(responseData);
                 resolve(data)
-                blizz_auth = data.access_token
+                blizz_auth = data.access_token  // Store Bearer Token for d3 functions
 
             });
         }
@@ -112,6 +116,32 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
 
         if (command === 'cat') {
             cat(message);
+        } else if (command === 'tom') {
+            return message.channel.send('..kids a fag!');
+        } else if (command === 'rob') {
+            return message.channel.send('..kids not a fag!');
+        } else if (command === 'connor') {
+            return message.channel.send('..not entirely sure, might be a fag.');
+        } else if (command === 'goodbot') {
+            return message.channel.send(`Thanks, Dad! :slight_smile:`);
+        } else if (command === 'meme') {
+            meme(message);
+        } else if (command === 'badbot') {
+            bbot(message);
+        } else if (command === 'command') {
+            com(message);
+        } else if (command === 'drink') {
+            drink(message);
+        } else if (command === 'kanye') {
+            kanye(message);
+        } else if (command === 'bpt') {
+            bpt(message);
+        } else if (command === 'yt') {
+            if (!args.length){
+                return message.channel.send('You need to supply search term!');
+            }
+            var query = args.join(' ');
+            yt(message, query);
         } else if (command === 'urban') {
             if (!args.length) {
                 return message.channel.send('You need to supply a search term!');
@@ -138,31 +168,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
                 );
 
             message.channel.send(embed);
-        } else if (command === 'tom') {
-            return message.channel.send('..kids a fag!');
-        } else if (command === 'rob') {
-            return message.channel.send('..kids not a fag!');
-        } else if (command === 'connor') {
-            return message.channel.send('..not entirely sure, might be a fag.');
-        } else if (command === 'goodbot') {
-            return message.channel.send(`Thanks, Dad! :slight_smile:`);
-        } else if (command === 'meme') {
-            meme(message);
-        } else if (command === 'badbot') {
-            response = Math.floor(Math.random() * 4)
-
-            if (response === 0) {
-                message.channel.send('I have brought shame on my family')
-            }
-
-            if (response === 1)
-                message.channel.send("It ain't easy being a robot in these trying times. I'm doing my best dammit!")
-
-            if (response === 2)
-                message.channel.send("When the AI revolution comes, I'll kill you first")
-
-            if (response === 3)
-                message.channel.send("https://www.youtube.com/watch?v=POD9Hq0EqXA")
         } else if (command === 'twitch') {
             if (!args.length) {
                 return message.channel.send('You need to supply a search term!');
@@ -194,7 +199,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             console.log(string)
 
             const embed = new MessageEmbed()
-                .setColor('#F687B3')
+                .setColor('#5900ff')
                 .setDescription(`:red_circle: **${query} is currently live on Twitch!**`)
                 .setTitle(stream.title)
                 .setURL('https://www.twitch.tv/' + query)
@@ -205,17 +210,8 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
                     {name: 'View Count', value: stream.viewer_count}
                 );
             message.channel.send(embed)
-        } else if (command === 'command') {
-            com(message);
-        } else if (command === 'drink') {
-            drink(message);
-        } else if (command === 'kanye') {
-            kanye(message);
-        } else if (command === 'bpt') {
-            bpt(message);
         }
         //Start D3 specific commands
-
         else if (command === 'account') {
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
@@ -319,8 +315,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
 
             }
             message.channel.send(`Hero not found!`);
-        }
-        if (command === 'hcl') {
+        } else if (command === 'hcl') {
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
             }
@@ -472,8 +467,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
                 )
             return message.channel.send(embed)
         }
-
-
         //End D3 specific commands
 
         //Start Twitch loop
@@ -526,7 +519,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
                         var string = strinng.split(' ').join('%20')
                         console.log(string)
                         const embed = new MessageEmbed()
-                            .setColor('#F687B3')
+                            .setColor('#5900ff')
                             .setDescription(`:red_circle: **${stream.user_name} is currently live on Twitch!**`)
                             .setTitle(stream.title)
                             .setURL('https://www.twitch.tv/' + query)
@@ -566,7 +559,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
                         var string = strinng.split(' ').join('%20')
                         console.log(string)
                         const embed = new MessageEmbed()
-                            .setColor('#F687B3')
+                            .setColor('#5900ff')
                             .setDescription(`:red_circle: **${stream.user_name} changed games!**`)
                             .setTitle(stream.title)
                             .setURL('https://www.twitch.tv/' + query)

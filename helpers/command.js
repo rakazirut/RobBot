@@ -15,6 +15,7 @@ module.exports = function command(message) {
             { name: 'BlackPeopleTwitter', value: 'ex: !bpt' },
             { name: 'Memes', value: 'ex: !meme' },
             { name: 'Get drunk?', value: 'ex: !drink' },
+            { name: 'Youtube', value: 'ex: !yt bustin' },
             { name: 'Diablo 3 Command Info', value: 'ex: !d3' }
         );
     message.channel.send(embed)
