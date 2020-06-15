@@ -16,6 +16,7 @@ module.exports = function command(message) {
             { name: 'Memes', value: 'ex: !meme' },
             { name: 'Get drunk?', value: 'ex: !drink' },
             { name: 'Youtube', value: 'ex: !yt bustin' },
+            { name: 'reminder', value: 'note: the number is seconds until you should be reminded.\nex: !remind 30 your-message-stubbed' },
             { name: 'Diablo 3 Command Info', value: 'ex: !d3' }
         );
     message.channel.send(embed)

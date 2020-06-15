@@ -8,6 +8,7 @@ const com = require('./helpers/command.js');
 const meme = require('./helpers/mymeme.js');
 const bpt = require('./helpers/bpt.js');
 const yt = require('./helpers/yt.js');
+const remind = require('./helpers/remind.js');
 const bbot = require('./helpers/bbot.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
@@ -18,6 +19,7 @@ const queryOffline = [];
 const queryGame = [];
 let i = 0;
 var blizz_auth;
+var blizz_expire_in;
 
 // Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
@@ -44,6 +46,7 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
                 let data = JSON.parse(responseData);
                 resolve(data)
                 blizz_auth = data.access_token  // Store Bearer Token for d3 functions
+                blizz_expire_in = data.expires_in
 
             });
         }
@@ -57,8 +60,22 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
         });
     });
 }
+// Checks if current blizz_auth is expired and if so, creates a new one
+function isExpired(expireTime){
+    var dt = new Date()
+    var dtPlusExpire = new Date()
+    dtPlusExpire.setSeconds( dtPlusExpire.getSeconds() + expireTime );
+    if(dt>dtPlusExpire){
+        createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
+        console.log('New Blizzard access token created.')
+    }
+    else{
+        console.log('Blizzard auth expires: ' + dtPlusExpire)
+    }
+}
 
 createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
+
 
 // Initalize the discord client instance
     const client = new Discord.Client();
@@ -136,6 +153,15 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             kanye(message);
         } else if (command === 'bpt') {
             bpt(message);
+        } else if (command === 'remind'){
+            if (!args.length){
+                return message.channel.send('You need to supply seconds and reminder message!');
+            }
+            var query = args.join(' ');
+            qStr = query.split(' ');
+            console.log(message.author.username);
+            remind(message, qStr);
+
         } else if (command === 'yt') {
             if (!args.length){
                 return message.channel.send('You need to supply search term!');
@@ -212,10 +238,12 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             message.channel.send(embed)
         }
         //Start D3 specific commands
+
         else if (command === 'account') {
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
             }
+            isExpired(blizz_expire_in);
             var query = args.join(' ');
             query = query.replace("#", "%23")
             const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
@@ -252,6 +280,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
             }
+            isExpired(blizz_expire_in);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             query = qStr[0].replace("#", "%23")
@@ -319,6 +348,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
             }
+            isExpired(blizz_expire_in);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             query = qStr[0].replace("#", "%23")
@@ -375,6 +405,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill barbarian bash');
             }
+            isExpired(blizz_expire_in);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             var sClass = qStr[0].toLowerCase()
@@ -410,6 +441,7 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian');
             }
+            isExpired(blizz_expire_in);
             var queryOne = args.join(' ')
             queryOne = queryOne.toLowerCase()
             const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${queryOne}?locale=en_US&access_token=` + blizz_auth
