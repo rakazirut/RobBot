@@ -1,6 +1,7 @@
 const logger = require('winston');
 const auth = require('./auth.json');
 const Discord = require('discord.js');
+var cron = require('cron');
 const cat = require('./helpers/cat.js');
 const kanye = require('./helpers/kanye.js');
 const drink = require('./helpers/drink.js');
@@ -13,14 +14,11 @@ const bbot = require('./helpers/bbot.js');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-
 const queryOnline = [];
 const queryOffline = [];
 const queryGame = [];
 let i = 0;
 var blizz_auth;
-var blizz_expire_in;
-var blizz_auth_expire = new Date()
 
 // Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
@@ -47,9 +45,7 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
                 let data = JSON.parse(responseData);
                 resolve(data)
                 blizz_auth = data.access_token  // Store Bearer Token for d3 functions
-                blizz_expire_in = data.expires_in
-                blizz_auth_expire.setSeconds( blizz_auth_expire.getSeconds() + blizz_expire_in );
-
+                console.log('new blizz_auth created on '+ new Date())
             });
         }
 
@@ -62,21 +58,13 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
         });
     });
 }
-// Checks if current blizz_auth is expired and if so, creates a new one
-function isExpired(expireDate){
-    var dt = new Date()
 
-    if(dt>expireDate){
-        createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
-        console.log('New Blizzard access token created.')
-    }
-    else{
-        console.log('Blizzard auth expires: ' + expireDate)
-    }
-}
+createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us') //initally created blizz_auth on boot
 
-createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
-
+let bAuthRegen = new cron.CronJob('0 0 0,12 * * *', function()
+{createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')} ); // fires every day, at 00:00:00 and 12:00:00
+                                                                                        // keeps blizz_auth alive
+bAuthRegen.start();
 
 // Initalize the discord client instance
     const client = new Discord.Client();
@@ -244,7 +232,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
             }
-            isExpired(blizz_auth_expire);
             var query = args.join(' ');
             query = query.replace("#", "%23")
             const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
@@ -281,7 +268,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
             }
-            isExpired(blizz_auth_expire);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             query = qStr[0].replace("#", "%23")
@@ -349,7 +335,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
             }
-            isExpired(blizz_auth_expire);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             query = qStr[0].replace("#", "%23")
@@ -406,7 +391,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill barbarian bash');
             }
-            isExpired(blizz_auth_expire);
             var queryOne = args.join(' ')
             qStr = queryOne.split(' ')
             var sClass = qStr[0].toLowerCase()
@@ -442,7 +426,6 @@ createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')
             if (!args.length) {
                 return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian');
             }
-            isExpired(blizz_auth_expire);
             var queryOne = args.join(' ')
             queryOne = queryOne.toLowerCase()
             const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${queryOne}?locale=en_US&access_token=` + blizz_auth
