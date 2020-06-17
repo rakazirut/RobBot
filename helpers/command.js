@@ -10,7 +10,6 @@ module.exports = function command(message) {
             { name: 'Is Tom a fag?', value: 'ex: !tom' },
             { name: 'Cats, bro.', value: 'ex: !cat' },
             { name: 'Look up what words mean.', value: 'ex: !urban bluewaffle' },
-            { name: 'Any lit streams?', value: 'ex: !twitch lirik' },
             { name: 'WWKS?', value: 'ex: !kanye' },
             { name: 'BlackPeopleTwitter', value: 'ex: !bpt' },
             { name: 'Memes', value: 'ex: !meme' },
