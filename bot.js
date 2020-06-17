@@ -68,7 +68,7 @@ bAuthRegen.start();                                                             
     const client = new Discord.Client();
 
 // Start twitch check cron fires every minute
-    let twitchCheck = new cron.CronJob('* * * * *', function () {
+    let twitchCheck = new cron.CronJob('*/5 * * * *', function () {
         tw(client);
     });
 twitchCheck.start();
