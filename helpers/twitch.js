@@ -22,11 +22,7 @@ module.exports = async function twitch(client) {
             headers: headers
         }).then(response => response.json());
 
-        //log current status of streams
-        console.log(queryOnline+' online')
-        console.log(queryOffline+' offline')
-        console.log(queryGame)
-
+        const [stream] = data;
         //IF no data return(user offline) and they are not in the offline array, add them to offline array)
         if (!data.length && queryOffline.includes(query)===false) {
             queryOffline.push(query)
@@ -36,10 +32,8 @@ module.exports = async function twitch(client) {
                 queryOnline.splice(rIndex, 1) // removes user from online, since they are offline
             }
         }
-
-        const [stream] = data;
         //If data returned(user online) and they are not in the online array, post the new content
-        if(data.length && queryOnline.includes(query)===false) {
+        else if(data.length && queryOnline.includes(query)===false) {
 
             const gameID = stream.game_id;
             queryGame.push(gameID) // adds record of the game the user is currently playing
@@ -54,7 +48,7 @@ module.exports = async function twitch(client) {
                 strinng = strinng.replace("/./", "/")
             }
             var string = strinng.split(' ').join('%20')
-            console.log(string)
+
             const embed = new MessageEmbed()
                 .setColor('#5900ff')
                 .setDescription(`:red_circle: **${stream.user_name} is currently live on Twitch!**`)
@@ -94,7 +88,7 @@ module.exports = async function twitch(client) {
                 strinng = strinng.replace("/./", "/")
             }
             var string = strinng.split(' ').join('%20')
-            console.log(string)
+
             const embed = new MessageEmbed()
                 .setColor('#5900ff')
                 .setDescription(`:red_circle: **${stream.user_name} changed games!**`)
@@ -108,9 +102,12 @@ module.exports = async function twitch(client) {
                 );
             client.channels.cache.find(channel => channel.name === 'twitch').send(embed);
             queryGame[queryOnline.indexOf(query)] = gameID // change record of game currently playing
-        }
-        else{ //IF user is in either array, and no status has changed, do nothing
+        } else{ //IF user is in either array, and no status has changed, do nothing
             console.log('-')
         }
     }
+    console.log('current time ' + new Date())
+    console.log(queryOnline+' online')
+    console.log(queryOffline+' offline')
+    console.log(queryGame)
 }
