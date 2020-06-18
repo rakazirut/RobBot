@@ -119,7 +119,6 @@ client.on('message', async message => {
     }
     if (!message.content.startsWith(prefix) || message.author.bot) return;  //if the command is entered, but is not recognized  or is sent by the bot, do nothing
 
-
     const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
     const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
 
@@ -209,7 +208,6 @@ client.on('message', async message => {
         query = qStr[0].replace("#", "%23")
         const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
         ).then(response => response.json());
-
 
         for (i = 0; i < data.heroes.length; i++) {
             if (data.heroes[i].name === qStr[1]) {

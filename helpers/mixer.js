@@ -49,7 +49,7 @@ module.exports = async function mixer(client) {
         else if(data.online === true && queryOnline.includes(query)===true && queryGame[queryOnline.indexOf(query)]!==data.type.id) {
             const embed = new MessageEmbed()
                 .setColor('#00eaff')
-                .setDescription(`:red_circle: **${data.token} is currently live on Mixer!**`)
+                .setDescription(`:red_circle: **${data.token} changed games!**`)
                 .setTitle(data.name)
                 .setURL(`https://mixer.com/${query}`)
                 .setImage(data.type.coverUrl)
