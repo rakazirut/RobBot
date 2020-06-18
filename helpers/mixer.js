@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const auth = require('../auth.json');
 const { MessageEmbed } = require('discord.js');
 const queryOnline = [];
 const queryOffline = [];
@@ -66,7 +65,7 @@ module.exports = async function mixer(client) {
         }
 
     }
-    console.log('current time ' + new Date())
+    console.log('Time completed: ' + new Date())
     console.log(queryOnline+' online - mixer')
     console.log(queryOffline+' offline - mixer')
     console.log(queryGame)

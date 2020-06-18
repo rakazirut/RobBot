@@ -106,8 +106,8 @@ module.exports = async function twitch(client) {
             console.log('-')
         }
     }
-    console.log('current time ' + new Date())
-    console.log(queryOnline+' online')
-    console.log(queryOffline+' offline')
+    console.log('Time completed: ' + new Date())
+    console.log(queryOnline+' online - twitch')
+    console.log(queryOffline+' offline - twitch')
     console.log(queryGame)
 }

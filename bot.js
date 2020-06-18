@@ -14,8 +14,12 @@ const bpt = require('./helpers/bpt.js');
 const yt = require('./helpers/yt.js');
 const remind = require('./helpers/remind.js');
 const bbot = require('./helpers/bbot.js');
-const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
+const d3 = require('./helpers/d3.js');
+const daccount = require('./helpers/d3account.js');
+const dhero = require('./helpers/d3hero.js');
+const dhcl = require('./helpers/d3hcl.js');
+const dsl = require('./helpers/d3skillList.js');
+const dsd = require('./helpers/d3skillDetail.js');
 
 let i = 0;
 var blizz_auth;
@@ -104,53 +108,28 @@ client.on('ready', function (evt) {
 
 // if a command is entered, the bot will respond accordingly
 client.on('message', async message => {
-    //if a message contains a instance of word 'game' and is a multiple of 5 relative to i, post auto response
-    // why?
-    if (!message.content.startsWith(prefix) && message.content.includes('game')) {
-        console.log(i)
-        if (i % 5 === 0) {
-            i++;
-            return message.channel.send(`I failed gym class 3 times 'cause I don't play no games!`);
-        } else {
-            i++;
-            return;
-        }
-
-    }
     if (!message.content.startsWith(prefix) || message.author.bot) return;  //if the command is entered, but is not recognized  or is sent by the bot, do nothing
 
     const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
     const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
 
-    if (command === 'cat') {
-        cat(message);
-    } else if (command === 'tom') {
-        return message.channel.send('..kids a fag!');
-    } else if (command === 'rob') {
-        return message.channel.send('..kids not a fag!');
-    } else if (command === 'connor') {
-        return message.channel.send('..not entirely sure, might be a fag.');
-    } else if (command === 'goodbot') {
-        return message.channel.send(`Thanks, Dad! :slight_smile:`);
-    } else if (command === 'meme') {
-        meme(message);
-    } else if (command === 'badbot') {
-        bbot(message);
-    } else if (command === 'command') {
-        com(message);
-    } else if (command === 'drink') {
-        drink(message);
-    } else if (command === 'kanye') {
-        kanye(message);
-    } else if (command === 'bpt') {
-        bpt(message);
-    } else if (command === 'remind'){
+    if (command === 'cat') { cat(message);}
+    else if (command === 'tom') { return message.channel.send('..kids a fag!');}
+    else if (command === 'rob') { return message.channel.send('..kids not a fag!');}
+    else if (command === 'connor') { return message.channel.send('..not entirely sure, might be a fag.');}
+    else if (command === 'goodbot') { return message.channel.send(`Thanks, Dad! :slight_smile:`);}
+    else if (command === 'meme') { meme(message);}
+    else if (command === 'badbot') { bbot(message);}
+    else if (command === 'command') { com(message);}
+    else if (command === 'drink') { drink(message);}
+    else if (command === 'kanye') { kanye(message);}
+    else if (command === 'bpt') { bpt(message);}
+    else if (command === 'remind'){
         if (!args.length){
             return message.channel.send('You need to supply seconds and reminder message!');
         }
         var query = args.join(' ');
         qStr = query.split(' ');
-        console.log(message.author.username);
         remind(message, qStr);
     } else if (command === 'yt') {
         if (!args.length){
@@ -167,257 +146,27 @@ client.on('message', async message => {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
         }
-        var query = args.join(' ');
-        query = query.replace("#", "%23")
-        const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
-        ).then(response => response.json());
-        var resp = []
-        var lastPlayed
-        for (i = 0; i < data.heroes.length; i++) {
-            var id = data.heroes[i].id
-            resp.push(data.heroes[i].name)
-            if (id === data.lastHeroPlayed) {
-                lastPlayed = data.heroes[i].name
-            }
-
-        }
-        const embed = new MessageEmbed()
-            .setColor('#FF0000')
-            .setDescription(`Account Info`)
-            .setTitle(data.battleTag)
-            .addFields(
-                {name: 'Overall HC Paragon:', value: data.paragonLevelHardcore},
-                {name: 'Current Season HC Paragon:', value: data.paragonLevelSeasonHardcore},
-                {
-                    name: 'Total Kills:', value:
-                        `Softcore: ` + data.kills.monsters + `\n` +
-                        `Hardcore: ` + data.kills.hardcoreMonsters + `\n` +
-                        `Elites: ` + data.kills.elites
-                },
-                {name: 'Heroes:', value: resp},
-                {name: 'Last Played Hero:', value: lastPlayed}
-            )
-
-        return message.channel.send(embed)
+        daccount(message,args,blizz_auth);
     } else if (command === 'hero') {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
         }
-        var queryOne = args.join(' ')
-        qStr = queryOne.split(' ')
-        query = qStr[0].replace("#", "%23")
-        const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
-        ).then(response => response.json());
-
-        for (i = 0; i < data.heroes.length; i++) {
-            if (data.heroes[i].name === qStr[1]) {
-                var hId = data.heroes[i].id
-                const hero = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/hero/${hId}?locale=en_US&access_token=` + blizz_auth
-                ).then(response => response.json());
-                const embed = new MessageEmbed()
-                    .setColor('#FF0000')
-                    .setDescription(data.battleTag + ` Hero`)
-                    .setTitle(hero.name)
-                    .addFields(
-                        {name: 'Class:', value: hero.class},
-                        {name: 'Paragon Level:', value: hero.paragonLevel},
-                        {name: 'Highest Solo GR:', value: hero.highestSoloRiftCompleted},
-                        {
-                            name: 'Gear:', value: `**Helm:** ` + hero.items.head.name + `\n` +
-                                `**Amulet:** ` + hero.items.neck.name + `\n` +
-                                `**Chest:** ` + hero.items.torso.name + `\n` +
-                                `**Shoulder:** ` + hero.items.shoulders.name + `\n` +
-                                `**Leg:** ` + hero.items.legs.name + `\n` +
-                                `**Belt:** ` + hero.items.waist.name + `\n` +
-                                `**Gloves:** ` + hero.items.hands.name + `\n` +
-                                `**Bracers:** ` + hero.items.bracers.name + `\n` +
-                                `**Boots:** ` + hero.items.feet.name + `\n` +
-                                `**Rings:** ` + hero.items.leftFinger.name + ` **||** ` + hero.items.rightFinger.name + `\n` +
-                                `**Main Hand:** ` + hero.items.mainHand.name + `\n` +
-                                `**Off Hand:** ` + hero.items.offHand.name
-                        },
-                        {
-                            name: 'Active Skills:',
-                            value:
-                                hero.skills.active[0].skill.name + ' - ' + hero.skills.active[0].rune.name + `\n` +
-                                hero.skills.active[1].skill.name + ' - ' + hero.skills.active[1].rune.name + `\n` +
-                                hero.skills.active[2].skill.name + ' - ' + hero.skills.active[2].rune.name + `\n` +
-                                hero.skills.active[3].skill.name + ' - ' + hero.skills.active[3].rune.name + `\n` +
-                                hero.skills.active[4].skill.name + ' - ' + hero.skills.active[4].rune.name + `\n` +
-                                hero.skills.active[5].skill.name + ' - ' + hero.skills.active[5].rune.name
-
-                        },
-                        {
-                            name: 'Passive Skills:',
-                            value:
-                                hero.skills.passive[0].skill.name + `\n` +
-                                hero.skills.passive[1].skill.name + `\n` +
-                                hero.skills.passive[2].skill.name + `\n` +
-                                hero.skills.passive[3].skill.name
-                        }
-                    );
-                message.channel.send(embed)
-                return
-            } else if (data.heroes[i].name !== qStr[1]) {
-                console.log('-')
-            }
-
-
-        }
-        message.channel.send(`Hero not found!`);
+        dhero(message,args,blizz_auth);
     } else if (command === 'hcl') {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
         }
-        var queryOne = args.join(' ')
-        qStr = queryOne.split(' ')
-        query = qStr[0].replace("#", "%23")
-        var charClass
-
-        const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
-        ).then(response => response.json());
-
-        if (data.code === 'NOTFOUND') {
-            return message.channel.send(`Account not found!`)
-        }
-
-
-        for (i = 0; i < data.heroes.length; i++) {
-            if (data.heroes[i].name === qStr[1]) {
-                charClass = data.heroes[i].class
-            } else if (data.heroes[i].name !== qStr[1]) {
-                console.log('-')
-            } else {
-                return message.channel.send(`Hero not found!`)
-            }
-
-        }
-
-        switch (charClass) {
-            case "witch-doctor":
-                charClass = 'wd'
-                break
-            case "demon-hunter":
-                charClass = 'dh'
-                break
-            default:
-                break
-        }
-        const lbd = await fetch(`https://us.api.blizzard.com/data/d3/season/${qStr[2]}/leaderboard/rift-hardcore-${charClass}?access_token=` + blizz_auth
-        ).then(response => response.json());
-        for (i = 0; i < lbd.row.length; i++) {
-            if (lbd.row[i].player[0].data[0].string === qStr[0]) {
-
-                const embed = new MessageEmbed()
-                    .setColor('#FF0000')
-                    .setDescription(lbd.title.en_US)
-                    .setTitle(`Hardcore Season ${qStr[2]} Leaderboard`)
-                    .addFields(
-                        {name: 'Hero:', value: qStr[1]},
-                        {name: 'Rank:', value: lbd.row[i].data[0].number},
-                        {name: 'Rift Level:', value: lbd.row[i].data[1].number}
-                    )
-                return message.channel.send(embed)
-
-            }
-        }
+        dhcl(message,args,blizz_auth);
     } else if (command === 'skill_detail') {
         if (!args.length) {
             return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill barbarian bash');
         }
-        var queryOne = args.join(' ')
-        qStr = queryOne.split(' ')
-        var sClass = qStr[0].toLowerCase()
-        var sSkill = qStr[1].toLowerCase()
-        const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${sClass}/skill/${sSkill}?locale=en_US&access_token=` + blizz_auth
-        ).then(response => response.json());
-
-        if (data.hasOwnProperty('runes')) {
-            const embed = new MessageEmbed()
-                .setColor('#FF0000')
-                .setDescription(data.skill.description)
-                .setTitle(`Active Skill: ` + data.skill.name)
-                .addFields(
-                    {name: `**Rune:** ` + data.runes[0].name, value: data.runes[0].description},
-                    {name: `**Rune:** ` + data.runes[1].name, value: data.runes[1].description},
-                    {name: `**Rune:** ` + data.runes[2].name, value: data.runes[2].description},
-                    {name: `**Rune:** ` + data.runes[3].name, value: data.runes[3].description},
-                    {name: `**Rune:** ` + data.runes[4].name, value: data.runes[4].description}
-                )
-            return message.channel.send(embed)
-        } else {
-            const embed = new MessageEmbed()
-                .setColor('#FF0000')
-                .setDescription(data.skill.description)
-                .setTitle(`Passive Skill: ` + data.skill.name)
-                .addFields(
-                    {name: `**Musings:** `, value: data.skill.flavorText}
-                )
-            return message.channel.send(embed)
-        }
-
+        dsd(message,args,blizz_auth);
     } else if (command === 'skill_list') {
         if (!args.length) {
             return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian');
         }
-        var queryOne = args.join(' ')
-        queryOne = queryOne.toLowerCase()
-        const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${queryOne}?locale=en_US&access_token=` + blizz_auth
-        ).then(response => response.json());
-        var skillListActive = []
-        var skillListPassive = []
-        console.log(queryOne)
-        for (i = 0; i < data.skills.active.length; i++) {
-            skillListActive.push(data.skills.active[i].slug)
-        }
-        for (i = 0; i < data.skills.passive.length; i++) {
-            skillListPassive.push(data.skills.passive[i].slug)
-        }
-
-
-        const embed = new MessageEmbed()
-            .setColor('#FF0000')
-            .setDescription('Use !skill_detail with class and skill name for additional details\n' +
-                '**Example:** !skill_detail witch-doctor spirit-walk')
-            .setTitle(data.slug + ' skills')
-            .addFields(
-                {name: `**Active Skills:** `, value: skillListActive},
-                {name: `**Passive Skills:** `, value: skillListPassive}
-            )
-        return message.channel.send(embed)
-
-    } else if (command === 'd3') {
-        const embed = new MessageEmbed()
-            .setColor('#FF0000')
-            .setDescription('Specialized functions related to D3 Hardcore Seasonal')
-            .setTitle(`Diablo 3 Commands`)
-            .addFields(
-                {
-                    name: '!account:', value: `Returns information related to the user account.\n` +
-                        `**Example:** !account WhiskeyRomeo#1730`
-                },
-                {
-                    name: '!hero:', value: 'Returns information related to the specified hero for an account.\n' +
-                        `**Example:** !hero WhiskeyRomeo#1730 BackClapper`
-                },
-                {
-                    name: '!hcl:',
-                    value: `Returns (if applicable) the Solo GR Leaderboard position for the specified hero and season.\n` +
-                        `**Example:** !hcl WhiskeyRomeo#1730 BackClapper 20`
-                },
-                {
-                    name: '!skill_list:', value: `Returns list of skills for the given class\n` +
-                        `**Example:** !skill_list demon-hunter\n` +
-                        `**Class List:** barbarian, crusader, demon-hunter, monk, necromancer, witch-doctor, wizard`
-                },
-                {
-                    name: '!skill_detail:', value: `Returns additional detail of skill for the given class\n` +
-                        `**Example:** !skill_detail demon-hunter cluster-arrow`
-                }
-            )
-        return message.channel.send(embed)
-    }
-    //End D3 specific commands
+        dsl(message,args,blizz_auth);
+    } else if (command === 'd3') { d3(message);}
 });
 client.login(auth.token);
-
