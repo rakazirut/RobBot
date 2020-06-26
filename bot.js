@@ -5,7 +5,6 @@ const cron = require('cron');
 const cat = require('./helpers/cat.js');
 const tw = require('./helpers/twitch.js');
 const kanye = require('./helpers/kanye.js');
-const mix = require('./helpers/mixer.js');
 const urban = require('./helpers/urban.js');
 const drink = require('./helpers/drink.js');
 const com = require('./helpers/command.js');
@@ -20,8 +19,6 @@ const dhero = require('./helpers/d3hero.js');
 const dhcl = require('./helpers/d3hcl.js');
 const dsl = require('./helpers/d3skillList.js');
 const dsd = require('./helpers/d3skillDetail.js');
-
-let i = 0;
 var blizz_auth;
 
 // Create blizzard access token function
@@ -77,12 +74,6 @@ let twitchCheck = new cron.CronJob('1-59/2 * * * *', function () {
     tw(client);
 });
 twitchCheck.start();
-
-// Start Mixer check cron fires every even minute
-let mixCheck = new cron.CronJob('*/2 * * * *', function () {
-    mix(client);
-});
-mixCheck.start();
 
 // Prefix to tell RobBot a command has been entered
 const prefix = '!';
