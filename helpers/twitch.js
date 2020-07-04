@@ -17,10 +17,11 @@ module.exports = async function twitch(client) {
     // loop every minute to check the status of the streamers
     for(i = 0; i< queryStr.length; i++) {
         const query = queryStr[i]
-        const {data} = await fetch(`https://api.twitch.tv/helix/streams?client_id=` + auth.twitch_client_id + `&user_login=${query}`, {
+        const {data} = await fetch(`https://api.twitch.tv/helix/streams?user_login=${query}`, {
             method: 'GET',
             headers: headers
         }).then(response => response.json());
+
 
         const [stream] = data;
         //IF no data return(user offline) and they are not in the offline array, add them to offline array)
