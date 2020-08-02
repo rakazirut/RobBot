@@ -12,7 +12,7 @@ const headers = {
 
 module.exports = async function twitch(client) {
     // The streamers we are checking for
-    const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'shotz', 'kitboga', 'sodapoppin', 'quin69', 'npmlol', 'checkyowatch',
+    const queryStr = ['lirik', 'summit1g', 'timthetatman', 'xqcow', 'shotz', 'kitboga', 'sodapoppin', 'quin69', 'nmplol', 'checkyowatch',
         'moonmoon']
     // loop every minute to check the status of the streamers
     for(i = 0; i< queryStr.length; i++) {
