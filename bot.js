@@ -19,12 +19,21 @@ const dhero = require('./helpers/d3hero.js');
 const dhcl = require('./helpers/d3hcl.js');
 const dsl = require('./helpers/d3skillList.js');
 const dsd = require('./helpers/d3skillDetail.js');
-var blizz_auth;
 
+
+function fileWrite(fileName, file){
+    const fs = require('fs');
+    fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
+        if (err) return console.log(err)
+        console.log(JSON.stringify(file))
+        console.log('writing to ' + fileName)
+
+    })
+}
 
 // Create twitch access token function
 async function createTwitchAuth(clientId, clientSecret) {
-    const fs = require('fs');
+
     const fetch = require('node-fetch');
     const filename = './auth.json';
     const file = require(filename);
@@ -34,12 +43,8 @@ async function createTwitchAuth(clientId, clientSecret) {
     }).then(response => response.json())
 
     file.twitch_bearer_token = list.access_token
-    fs.writeFile(filename, JSON.stringify(file, null, 2), function (err) {
-        if (err) return console.log(err)
-        console.log(JSON.stringify(file))
-        console.log('writing to ' + filename)
+    fileWrite(filename, file)
 
-    })
 }
 
 
@@ -61,14 +66,18 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
         let responseData = '';
 
         function requestHandler(res) {
+            const filename = './auth.json';
+            const file = require(filename);
+
+
             res.on('data', (chunk) => {
                 responseData += chunk;
             });
             res.on('end', () => {
                 let data = JSON.parse(responseData);
                 resolve(data)
-                blizz_auth = data.access_token  // Store Bearer Token for d3 functions
-                console.log('new blizz_auth created on '+ new Date())
+                file.blizzard_bearer_token = data.access_token  // Store Bearer Token for d3 functions
+                fileWrite(filename, file)
             });
         }
 
@@ -82,12 +91,12 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
     });
 }
 
-createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us') //initally created blizz_auth on boot
+createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us') //initally created auth.blizzard_bearer_token on boot
 createTwitchAuth(auth.twitch_client_id,auth.twitch_client_secret) //initally created twitch_auth on boot
 
 let bAuthRegen = new cron.CronJob('0 0 0,12 * * *', function()
 {createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')} ); // fires every day, at 00:00:00 and 12:00:00
-bAuthRegen.start();                                                                     // keeps blizz_auth alive
+bAuthRegen.start();                                                                     // keeps auth.blizzard_bearer_token alive
 
 let tAuthRegen = new cron.CronJob('0 0 1 * *', function()
 {createTwitchAuth(auth.twitch_client_id,auth.twitch_client_secret)} ); // fires every month, at 00:00:00
@@ -165,27 +174,27 @@ client.on('message', async message => {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
         }
-        daccount(message,args,blizz_auth);
+        daccount(message,args,auth.blizzard_bearer_token);
     } else if (command === 'hero') {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
         }
-        dhero(message,args,blizz_auth);
+        dhero(message,args,auth.blizzard_bearer_token);
     } else if (command === 'hcl') {
         if (!args.length) {
             return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
         }
-        dhcl(message,args,blizz_auth);
+        dhcl(message,args,auth.blizzard_bearer_token);
     } else if (command === 'skill_detail') {
         if (!args.length) {
             return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill barbarian bash');
         }
-        dsd(message,args,blizz_auth);
+        dsd(message,args,auth.blizzard_bearer_token);
     } else if (command === 'skill_list') {
         if (!args.length) {
             return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian');
         }
-        dsl(message,args,blizz_auth);
+        dsl(message,args,auth.blizzard_bearer_token);
     } else if (command === 'd3') { d3(message);}
 });
 client.login(auth.token);
