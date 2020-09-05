@@ -21,6 +21,28 @@ const dsl = require('./helpers/d3skillList.js');
 const dsd = require('./helpers/d3skillDetail.js');
 var blizz_auth;
 
+
+// Create twitch access token function
+async function createTwitchAuth(clientId, clientSecret) {
+    const fs = require('fs');
+    const fetch = require('node-fetch');
+    const filename = './auth.json';
+    const file = require(filename);
+
+    const list = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`, {
+        method: 'POST'
+    }).then(response => response.json())
+
+    file.twitch_bearer_token = list.access_token
+    fs.writeFile(filename, JSON.stringify(file, null, 2), function (err) {
+        if (err) return console.log(err)
+        console.log(JSON.stringify(file))
+        console.log('writing to ' + filename)
+
+    })
+}
+
+
 // Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
     return new Promise((resolve, reject) => {
@@ -61,10 +83,16 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
 }
 
 createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us') //initally created blizz_auth on boot
+createTwitchAuth(auth.twitch_client_id,auth.twitch_client_secret) //initally created twitch_auth on boot
 
 let bAuthRegen = new cron.CronJob('0 0 0,12 * * *', function()
 {createAccessToken(auth.blizzard_client_id,auth.blizzard_client_secret, 'us')} ); // fires every day, at 00:00:00 and 12:00:00
 bAuthRegen.start();                                                                     // keeps blizz_auth alive
+
+let tAuthRegen = new cron.CronJob('0 0 1 * *', function()
+{createTwitchAuth(auth.twitch_client_id,auth.twitch_client_secret)} ); // fires every month, at 00:00:00
+tAuthRegen.start();                                                                     // keeps twitch_auth alive
+
 
 // Initalize the discord client instance
 const client = new Discord.Client();
