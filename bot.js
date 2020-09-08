@@ -199,7 +199,7 @@ client.on('message', async message => {
     } else if (command === 'd3') { d3(message);}
     else if (command === 'twitch') {
         if (!args.length) {
-            return message.channel.send('You need to supply action and streamer name');
+            return message.channel.send('You need to supply action');
         }
         tl(message, args);
     }
