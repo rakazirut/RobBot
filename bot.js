@@ -3,7 +3,9 @@ const auth = require('./auth.json');
 const Discord = require('discord.js');
 const cron = require('cron');
 const cat = require('./helpers/cat.js');
-const tw = require('./helpers/twitch.js');
+const twitch = require('./helpers/twitch.js');
+const tw = twitch.twitch;
+const tl = twitch.twitchList;
 const kanye = require('./helpers/kanye.js');
 const urban = require('./helpers/urban.js');
 const drink = require('./helpers/drink.js');
@@ -44,7 +46,6 @@ async function createTwitchAuth(clientId, clientSecret) {
 
     file.twitch_bearer_token = list.access_token
     fileWrite(filename, file)
-
 }
 
 
@@ -196,5 +197,11 @@ client.on('message', async message => {
         }
         dsl(message,args,auth.blizzard_bearer_token);
     } else if (command === 'd3') { d3(message);}
+    else if (command === 'twitch') {
+        if (!args.length) {
+            return message.channel.send('You need to supply action and streamer name');
+        }
+        tl(message, args);
+    }
 });
 client.login(auth.token);
