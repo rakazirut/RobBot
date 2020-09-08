@@ -22,7 +22,6 @@ const dhcl = require('./helpers/d3hcl.js');
 const dsl = require('./helpers/d3skillList.js');
 const dsd = require('./helpers/d3skillDetail.js');
 
-
 function fileWrite(fileName, file){
     const fs = require('fs');
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
@@ -35,25 +34,20 @@ function fileWrite(fileName, file){
 
 // Create twitch access token function
 async function createTwitchAuth(clientId, clientSecret) {
-
     const fetch = require('node-fetch');
     const filename = './auth.json';
     const file = require(filename);
-
     const list = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`, {
         method: 'POST'
     }).then(response => response.json())
-
     file.twitch_bearer_token = list.access_token
     fileWrite(filename, file)
 }
-
 
 // Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
     return new Promise((resolve, reject) => {
         let credentials = Buffer.from(`${apiKey}:${apiSecret}`);
-
         const requestOptions = {
             host: `${region}.battle.net`,
             path: '/oauth/token',
@@ -63,14 +57,10 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-
         let responseData = '';
-
         function requestHandler(res) {
             const filename = './auth.json';
             const file = require(filename);
-
-
             res.on('data', (chunk) => {
                 responseData += chunk;
             });
@@ -81,11 +71,9 @@ function createAccessToken(apiKey, apiSecret, region = 'us') {
                 fileWrite(filename, file)
             });
         }
-
         let request = require('https').request(requestOptions, requestHandler);
         request.write('grant_type=client_credentials');
         request.end();
-
         request.on('error', (error) => {
             reject(error);
         });

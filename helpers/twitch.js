@@ -12,7 +12,7 @@ const headers = {
 
 // The streamers we are checking for
 var queryStr = ['lirik', 'summit1g', 'timthetatman', 'shotz', 'kitboga', 'quin69', 'nmplol', 'checkyowatch',
-    'moonmoon', 'shroud']
+   'moonmoon', 'shroud']
 
 module.exports = {
 
@@ -122,7 +122,10 @@ module.exports = {
         var queryOne = args.join(' ')
         qStr = queryOne.split(' ')
         var tAction = qStr[0].toLowerCase()
-        var tStreamer = qStr[1].toLowerCase()
+
+        if(qStr[1] === undefined){return message.channel.send(`provide query`);}
+        else{var tStreamer = qStr[1].toLowerCase()}
+
 
 
         if (tAction === 'get' && tStreamer === 'list'){
@@ -179,7 +182,7 @@ module.exports = {
             }
         }
         else{
-            return message.channel.send(`provide argument`)
+            return message.channel.send(`provide valid argument`)
         }
     }
 }
