@@ -26,7 +26,7 @@ module.exports = {
                 headers: headers
             }).then(response => response.json());
 
-
+            //why?
             const [stream] = data;
             //IF no data return(user offline) and they are not in the offline array, add them to offline array)
             if (!data.length && queryOffline.includes(query) === false) {
