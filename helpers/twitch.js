@@ -12,7 +12,7 @@ const headers = {
 
 // The streamers we are checking for
 var queryStr = ['lirik', 'summit1g', 'timthetatman', 'shotz', 'kitboga', 'quin69', 'nmplol', 'checkyowatch',
-   'moonmoon', 'shroud']
+   'moonmoon', 'shroud', 'ninja', 'heyzeusherestoast']
 
 module.exports = {
 
