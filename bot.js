@@ -21,6 +21,7 @@ const dhero = require('./helpers/d3hero.js');
 const dhcl = require('./helpers/d3hcl.js');
 const dsl = require('./helpers/d3skillList.js');
 const dsd = require('./helpers/d3skillDetail.js');
+const cp = require('child_process')
 
 function fileWrite(fileName, file){
     const fs = require('fs');
@@ -190,6 +191,9 @@ client.on('message', async message => {
             return message.channel.send('You need to supply action');
         }
         tl(message, args);
+    } else if(command === 'reboot'){
+        console.log('rebooting')
+        cp.exec(`echo ${auth.sp} | sudo -S -k /sbin/shutdown -r now`, function (msg) { console.log(msg) });
     }
 });
 client.login(auth.token);
