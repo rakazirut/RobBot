@@ -193,7 +193,7 @@ client.on('message', async message => {
         tl(message, args);
     } else if(command === 'reboot'){
         console.log('rebooting')
-        cp.exec(`echo ${auth.sp} | sudo -S -k /sbin/shutdown -r now`, function (msg) { console.log(msg) });
+        cp.exec(`sudo reboot -n`, function (msg) { console.log(msg) });
     }
 });
 client.login(auth.token);
