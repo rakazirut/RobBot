@@ -191,9 +191,6 @@ client.on('message', async message => {
             return message.channel.send('You need to supply action');
         }
         tl(message, args);
-    } else if(command === 'reboot'){
-        console.log('rebooting')
-        cp.exec('reboot', function (msg) { console.log(msg) });
     }
 });
 client.login(auth.token);
