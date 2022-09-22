@@ -33,7 +33,7 @@ function fileWrite(fileName, file) {
     })
 }
 
-// Create twitch access token function
+// Create twitch access token function - Tom added this to the comment!!
 async function createTwitchAuth(clientId, clientSecret) {
     const fetch = require('node-fetch');
     const filename = './auth.json';
@@ -45,7 +45,7 @@ async function createTwitchAuth(clientId, clientSecret) {
     fileWrite(filename, file)
 }
 
-// Create blizzard access token function
+// Create blizzard access token function - Tom added to this comment too!!!
 function createAccessToken(apiKey, apiSecret, region = 'us') {
     return new Promise((resolve, reject) => {
         let credentials = Buffer.from(`${apiKey}:${apiSecret}`);
