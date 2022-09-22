@@ -134,80 +134,101 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
     const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
 
-    if (command === 'cat') {
-        cat(message);
-    } else if (command === 'tom') {
-        return message.channel.send('Hey Tom!');
-    } else if (command === 'rob') {
-        logger.info('Hey!')
-        return message.channel.send('Hi Rob!');
-    } else if (command === 'connor') {
-        return message.channel.send('Sup Connor?');
-    } else if (command === 'goodbot') {
-        return message.channel.send(`Thanks, Dad! :slight_smile:`);
-    } else if (command === 'meme') {
-        meme(message);
-    } else if (command === 'badbot') {
-        bbot(message);
-    } else if (command === 'command') {
-        com(message);
-    } else if (command === 'drink') {
-        drink(message);
-    } else if (command === 'kanye') {
-        kanye(message);
-    } else if (command === 'bpt') {
-        bpt(message);
-    } else if (command === 'remind') {
-        if (!args.length) {
-            return message.channel.send('You need to supply seconds and reminder message!');
-        }
-        var query = args.join(' ');
-        qStr = query.split(' ');
-        remind(message, qStr);
-    } else if (command === 'yt') {
-        if (!args.length) {
+    switch(command) {
+        case 'cat':
+            cat(message);
+            break;
+        case 'tom':
+            return message.channel.send('Hey Tom!');
+            break; 
+        case 'rob':
+            logger.info('Hey!')
+            return message.channel.send('Hi Rob!');
+            break;
+        case 'connor':
+            return message.channel.send('Sup Connor?');
+            break;
+        case 'goodbot':
+            return message.channel.send(`Thanks, Dad! :slight_smile:`);
+            break;
+        case 'meme':
+            meme(message);
+            break;
+        case 'badbot':
+            bbot(message);
+            break;
+        case 'command':
+            com(message);
+            break;
+        case 'drink':
+            drink(message);
+            break;
+        case 'kanye':
+            kanye(message);
+            break;
+        case 'bpt':
+            bpt(message);
+            break;
+        case 'd3':
+            d3(message);
+            break;
+        case 'remind':
+            if (!args.length) {
+                return message.channel.send('You need to supply seconds and reminder message!');
+            }
+            var query = args.join(' ');
+            qStr = query.split(' ');
+            remind(message, qStr);
+            break;
+        case 'yt':
+             if (!args.length) {
             return message.channel.send('You need to supply search term!');
-        }
-        var query = args.join(' ');
-        yt(message, query);
-    } else if (command === 'urban') {
-        if (!args.length) {
+            }
+            var query = args.join(' ');
+            yt(message, query);
+            break;
+        case 'urban':
+            if (!args.length) {
             return message.channel.send('You need to supply a search term!');
-        }
-        urban(message, args);
-    } else if (command === 'account') { //Start D3 specific commands
-        if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730');
-        }
-        daccount(message, args, auth.blizzard_bearer_token);
-    } else if (command === 'hero') {
-        if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper');
-        }
-        dhero(message, args, auth.blizzard_bearer_token);
-    } else if (command === 'hcl') {
-        if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20');
-        }
-        dhcl(message, args, auth.blizzard_bearer_token);
-    } else if (command === 'skill_detail') {
-        if (!args.length) {
-            return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill barbarian bash');
-        }
-        dsd(message, args, auth.blizzard_bearer_token);
-    } else if (command === 'skill_list') {
-        if (!args.length) {
-            return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian');
-        }
-        dsl(message, args, auth.blizzard_bearer_token);
-    } else if (command === 'd3') {
-        d3(message);
+            }
+            urban(message, args);
+            break;
+        case 'account':
+            if (!args.length) {
+            return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730)');
+            }
+            daccount(message, args, auth.blizzard_bearer_token);
+            break;
+        case 'hero':
+            if (!args.length) {
+            return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper)');
+            }
+            dhero(message, args, auth.blizzard_bearer_token);
+            break;
+        case 'hcl':
+            if (!args.length) {
+            return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20)');
+            }
+            dhcl(message, args, auth.blizzard_bearer_token);
+            break;
+        case 'skill_detail':
+            if (!args.length) {
+            return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill_detail barbarian bash)');
+            }
+            dsd(message, args, auth.blizzard_bearer_token);
+            break;
+        case 'skill_list':
+            if (!args.length) {
+            return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian)');
+            }
+            dsl(message, args, auth.blizzard_bearer_token);
+            break;
+        // case 'twitch':
+        //     if (!args.length) {
+        //     return message.channel.send('You need to supply action');
+        //     }
+        //     tl(message, args);
+        //     break;
     }
-    // else if (command === 'twitch') {
-    //     if (!args.length) {
-    //         return message.channel.send('You need to supply action');
-    //     }
-    //     tl(message, args);
-    // }
 });
 client.login(auth.token);
