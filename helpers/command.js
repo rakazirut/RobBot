@@ -6,10 +6,10 @@ module.exports = function command(message) {
         .setDescription(`Some of the things I can do`)
         .setTitle('RobBot Commands')
         .addFields(
-            { name: 'Is Rob a fag?', value: 'ex: !rob' },
-            { name: 'Is Tom a fag?', value: 'ex: !tom' },
+            { name: 'Is Rob?', value: 'ex: !rob' },
+            { name: 'Is Tom?', value: 'ex: !tom' },
             { name: 'Cats, bro.', value: 'ex: !cat' },
-            { name: 'Look up what words mean.', value: 'ex: !urban bluewaffle' },
+            { name: 'Look up what words mean.', value: 'ex: !urban dance' },
             { name: 'WWKS?', value: 'ex: !kanye' },
             { name: 'BlackPeopleTwitter', value: 'ex: !bpt' },
             { name: 'Memes', value: 'ex: !meme' },
