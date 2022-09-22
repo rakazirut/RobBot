@@ -33,7 +33,7 @@ function fileWrite(fileName, file) {
     })
 }
 
-// Create twitch access token function - Tom added this to the comment!!
+// Create twitch access token function
 async function createTwitchAuth(clientId, clientSecret) {
     const fetch = require('node-fetch');
     const filename = './auth.json';
@@ -45,7 +45,7 @@ async function createTwitchAuth(clientId, clientSecret) {
     fileWrite(filename, file)
 }
 
-// Create blizzard access token function - Tom added to this comment too!!!
+// Create blizzard access token function
 function createAccessToken(apiKey, apiSecret, region = 'us') {
     return new Promise((resolve, reject) => {
         let credentials = Buffer.from(`${apiKey}:${apiSecret}`);
@@ -137,12 +137,12 @@ client.on('message', async message => {
     if (command === 'cat') {
         cat(message);
     } else if (command === 'tom') {
-        return message.channel.send('..kids a fag!');
+        return message.channel.send('Hey Tom!');
     } else if (command === 'rob') {
         logger.info('Hey!')
-        return message.channel.send('..kids not a fag!');
+        return message.channel.send('Hi Rob!');
     } else if (command === 'connor') {
-        return message.channel.send('..not entirely sure, might be a fag.');
+        return message.channel.send('Sup Connor?');
     } else if (command === 'goodbot') {
         return message.channel.send(`Thanks, Dad! :slight_smile:`);
     } else if (command === 'meme') {
