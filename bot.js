@@ -1,27 +1,8 @@
+const getChatCommand = require('./helpers/getCommand.js')
 const logger = require('winston');
 const auth = require('./auth.json');
 const Discord = require('discord.js');
 const cron = require('cron');
-const cat = require('./helpers/cat.js');
-// const twitch = require('./helpers/twitch.js');
-// const tw = twitch.twitch;
-// const tl = twitch.twitchList;
-const kanye = require('./helpers/kanye.js');
-const urban = require('./helpers/urban.js');
-const drink = require('./helpers/drink.js');
-const com = require('./helpers/command.js');
-const meme = require('./helpers/mymeme.js');
-const bpt = require('./helpers/bpt.js');
-const yt = require('./helpers/yt.js');
-const remind = require('./helpers/remind.js');
-const bbot = require('./helpers/bbot.js');
-const d3 = require('./helpers/d3.js');
-const daccount = require('./helpers/d3account.js');
-const dhero = require('./helpers/d3hero.js');
-const dhcl = require('./helpers/d3hcl.js');
-const dsl = require('./helpers/d3skillList.js');
-const dsd = require('./helpers/d3skillDetail.js');
-const cp = require('child_process')
 
 function fileWrite(fileName, file) {
     const fs = require('fs');
@@ -134,97 +115,8 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).split(/ +/); // split the ! from the command
     const command = args.shift().toLowerCase(); // convert the command to lower so we recognize commands regardless of how it was entered
 
-    switch(command) {
-        case 'cat':
-            cat(message);
-            break;
-        case 'tom':
-            return message.channel.send('Hey Tom!');
-        case 'rob':
-            logger.info('Hey!')
-            return message.channel.send('Hi Rob!');
-        case 'connor':
-            return message.channel.send('Sup Connor?');
-        case 'goodbot':
-            return message.channel.send(`Thanks, Dad! :slight_smile:`);
-        case 'meme':
-            meme(message);
-            break;
-        case 'badbot':
-            bbot(message);
-            break;
-        case 'command':
-            com(message);
-            break;
-        case 'drink':
-            drink(message);
-            break;
-        case 'kanye':
-            kanye(message);
-            break;
-        case 'bpt':
-            bpt(message);
-            break;
-        case 'd3':
-            d3(message);
-            break;
-        case 'remind':
-            if (!args.length) {
-                return message.channel.send('You need to supply seconds and reminder message!');
-            }
-            var query = args.join(' ');
-            qStr = query.split(' ');
-            remind(message, qStr);
-            break;
-        case 'yt':
-             if (!args.length) {
-            return message.channel.send('You need to supply search term!');
-            }
-            var query = args.join(' ');
-            yt(message, query);
-            break;
-        case 'urban':
-            if (!args.length) {
-            return message.channel.send('You need to supply a search term!');
-            }
-            urban(message, args);
-            break;
-        case 'account':
-            if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag! (ex: WhiskeyRomeo#1730)');
-            }
-            daccount(message, args, auth.blizzard_bearer_token);
-            break;
-        case 'hero':
-            if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag and HeroName! (ex: !hero WhiskeyRomeo#1730 BackClapper)');
-            }
-            dhero(message, args, auth.blizzard_bearer_token);
-            break;
-        case 'hcl':
-            if (!args.length) {
-            return message.channel.send('You need to supply a BattleTag, HeroName, and Season! (ex: !hcl WhiskeyRomeo#1730 BackClapper 20)');
-            }
-            dhcl(message, args, auth.blizzard_bearer_token);
-            break;
-        case 'skill_detail':
-            if (!args.length) {
-            return message.channel.send('You need to supply a Class Type and Skill Name (ex: !skill_detail barbarian bash)');
-            }
-            dsd(message, args, auth.blizzard_bearer_token);
-            break;
-        case 'skill_list':
-            if (!args.length) {
-            return message.channel.send('You need to supply a Class Type (ex: !skill_list barbarian)');
-            }
-            dsl(message, args, auth.blizzard_bearer_token);
-            break;
-        // case 'twitch':
-        //     if (!args.length) {
-        //     return message.channel.send('You need to supply action');
-        //     }
-        //     tl(message, args);
-        //     break;
-    }
+    getChatCommand(args,command,message)
+    
 });
 client.login(auth.token);
+    
