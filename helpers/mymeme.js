@@ -10,8 +10,8 @@ module.exports = function meme(message) {
         embed.setURL(file.postLink)
         embed.setImage(file.url)
         embed.addFields(
-                { name: 'Subreddit', value: file.subreddit }
-            );
+            { name: 'Subreddit', value: file.subreddit }
+        );
         message.channel.send(embed)
             .then(sent => console.log(`Sent a reply to ${sent.author.username}`))
         console.log('Bot responded with: ' + file.title);
