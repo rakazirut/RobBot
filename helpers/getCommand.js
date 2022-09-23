@@ -2,6 +2,7 @@ const cat = require('./cat.js');
 // const twitch = require('./helpers/twitch.js');
 // const tw = twitch.twitch;
 // const tl = twitch.twitchList;
+const auth = require('../auth.json');
 const kanye = require('./kanye.js');
 const urban = require('./urban.js');
 const drink = require('./drink.js');
