@@ -1,6 +1,5 @@
 const getChatCommand = require('./helpers/getCommand.js')
 const logger = require('winston');
-const auth = require('./auth.json');
 const Discord = require('discord.js');
 const cron = require('cron');
 
