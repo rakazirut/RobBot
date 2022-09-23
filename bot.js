@@ -140,17 +140,13 @@ client.on('message', async message => {
             break;
         case 'tom':
             return message.channel.send('Hey Tom!');
-            break; 
         case 'rob':
             logger.info('Hey!')
             return message.channel.send('Hi Rob!');
-            break;
         case 'connor':
             return message.channel.send('Sup Connor?');
-            break;
         case 'goodbot':
             return message.channel.send(`Thanks, Dad! :slight_smile:`);
-            break;
         case 'meme':
             meme(message);
             break;
