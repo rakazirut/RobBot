@@ -65,4 +65,3 @@ aws ec2 describe-instances
 8. name: 'reminder', value: 'note: the number is seconds until you should be reminded. ex: !remind 30 your-message-stubbed' ,
 
 9. name: 'Diablo 3 Command Info', value: 'ex: !d3' 
-
