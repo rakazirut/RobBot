@@ -24,6 +24,9 @@ Built using node.js
 - docker exec -it <container_id> /bin/bash
     - Access running Container
 
+- docker logs <container_id>
+    - Get the log
+
 ## EC2 Image details
 - AMI
     - ID: ami-026b57f3c383c2eec
