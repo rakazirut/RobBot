@@ -1,9 +1,8 @@
 const getChatCommand = require('./helpers/getCommand.js')
 const logger = require('winston');
-const auth = require('./auth.json');
 const Discord = require('discord.js');
 const cron = require('cron');
-
+const auth = require('./auth.json')
 function fileWrite(fileName, file) {
     const fs = require('fs');
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
