@@ -12,12 +12,17 @@ Built using node.js
 - docker run -d --restart on-failure robbot
     - Run image
 
-
 - docker container stop <container name>
     - Stop image
 
 - docker container prune
     - Delete image
+
+- docker ps
+    - List Containers
+
+- docker exec -it <container_id> /bin/bash
+    - Access running Container
 
 ## EC2 Image details
 - AMI
@@ -33,6 +38,11 @@ Built using node.js
         - For access secret
 - User Data
     - use script: ec2-user-data.sh
+
+## AWS EC2 Launch from template
+aws ec2 run-instances --launch-template LaunchTemplateId=lt-0dd5918511adde591
+
+aws ec2 describe-instances
 
 ## Commands
 1. name: 'Cats, bro.', value: 'ex: !cat'
