@@ -6,13 +6,24 @@ module.exports = async function dhero(message, args, blizz_auth) {
     qStr = queryOne.split(' ')
     query = qStr[0].replace("#", "%23")
     const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
-    ).then(response => response.json());
+    ).then(response => {
+        if (response.status != 200) {
+            return message.channel.send('Account not found!')
+        }
+        return response.json()
+    });
+
+    if (data == null) { return }
 
     for (i = 0; i < data.heroes.length; i++) {
+        console.log(data.heroes[i].name + ' ' + qStr[1])
         if (data.heroes[i].name === qStr[1]) {
             var hId = data.heroes[i].id
             const hero = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/hero/${hId}?locale=en_US&access_token=` + blizz_auth
-            ).then(response => response.json());
+            ).then(response => {
+                return response.json()
+            });
+
             const embed = new MessageEmbed()
                 .setColor('#FF0000')
                 .setDescription(data.battleTag + ` Hero`)

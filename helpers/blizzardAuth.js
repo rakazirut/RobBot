@@ -1,11 +1,11 @@
 const auth = require('../auth.json')
+const logger = require('winston');
 
 function fileWrite(fileName, file) {
     const fs = require('fs');
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
         if (err) return console.log(err)
-        console.log(JSON.stringify(file))
-        console.log('writing to ' + fileName)
+        logger.info('blizz auth written to ' + fileName)
 
     })
 }

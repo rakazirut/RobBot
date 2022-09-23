@@ -4,10 +4,16 @@ const { MessageEmbed } = require('discord.js');
 module.exports = async function dskillD(message, args, blizz_auth) {
     var queryOne = args.join(' ')
     qStr = queryOne.split(' ')
-    var sClass = qStr[0].toLowerCase()
-    var sSkill = qStr[1].toLowerCase()
-    const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${sClass}/skill/${sSkill}?locale=en_US&access_token=` + blizz_auth
-    ).then(response => response.json());
+    var sClass = qStr[0]
+    var sSkill = qStr[1]
+    if (sClass == null || sSkill == null){
+        return message.channel.send('Please provide required information!')
+    }
+    const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${sClass.toLowerCase()}/skill/${sSkill.toLowerCase()}?locale=en_US&access_token=` + blizz_auth
+    ).then(response => {
+        if(response.status != 200){ message.channel.send('Information not found!')}
+        return response.json()
+    });
 
     if (data.hasOwnProperty('runes')) {
         const embed = new MessageEmbed()

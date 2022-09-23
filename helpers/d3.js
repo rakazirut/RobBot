@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 module.exports = function d3(message) {
     const embed = new Discord.MessageEmbed()
         .setColor('#FF0000')
-        .setDescription('Specialized functions related to D3 Hardcore Seasonal')
+        .setDescription('Specialized functions related to D3')
         .setTitle(`Diablo 3 Commands`)
         .addFields(
             {

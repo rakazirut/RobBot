@@ -6,12 +6,18 @@ module.exports = async function daccount(message, args, blizz_auth) {
     var query = args.join(' ');
     query = query.replace("#", "%23")
     const data = await fetch(`https://us.api.blizzard.com/d3/profile/${query}/?locale=en_US&access_token=` + blizz_auth
-    ).then(response => response.json());
-    var resp = []
+    ).then((response) => {
+        if (response.status != 200) {
+            return message.channel.send('Account not found!')
+        }
+        return response.json()
+    });
+
+    var heroList = []
     var lastPlayed
     for (i = 0; i < data.heroes.length; i++) {
         var id = data.heroes[i].id
-        resp.push(data.heroes[i].name)
+        heroList.push(data.heroes[i].name)
         if (id === data.lastHeroPlayed) {
             lastPlayed = data.heroes[i].name
         }
@@ -25,12 +31,13 @@ module.exports = async function daccount(message, args, blizz_auth) {
             { name: 'Overall HC Paragon:', value: data.paragonLevelHardcore },
             { name: 'Current Season HC Paragon:', value: data.paragonLevelSeasonHardcore },
             {
-                name: 'Total Kills:', value:
+                name:
+                    'Total Kills:', value:
                     `Softcore: ` + data.kills.monsters + `\n` +
                     `Hardcore: ` + data.kills.hardcoreMonsters + `\n` +
                     `Elites: ` + data.kills.elites
             },
-            { name: 'Heroes:', value: resp },
+            { name: 'Heroes:', value: heroList },
             { name: 'Last Played Hero:', value: lastPlayed }
         )
 
