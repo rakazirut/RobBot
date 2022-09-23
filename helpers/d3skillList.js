@@ -23,8 +23,8 @@ module.exports = async function dskillList(message, args, blizz_auth) {
             '**Example:** !skill_detail witch-doctor spirit-walk')
         .setTitle(data.slug + ' skills')
         .addFields(
-            {name: `**Active Skills:** `, value: skillListActive},
-            {name: `**Passive Skills:** `, value: skillListPassive}
+            { name: `**Active Skills:** `, value: skillListActive },
+            { name: `**Passive Skills:** `, value: skillListPassive }
         )
     return message.channel.send(embed)
 }

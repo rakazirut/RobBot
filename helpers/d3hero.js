@@ -18,9 +18,9 @@ module.exports = async function dhero(message, args, blizz_auth) {
                 .setDescription(data.battleTag + ` Hero`)
                 .setTitle(hero.name)
                 .addFields(
-                    {name: 'Class:', value: hero.class},
-                    {name: 'Paragon Level:', value: hero.paragonLevel},
-                    {name: 'Highest Solo GR:', value: hero.highestSoloRiftCompleted},
+                    { name: 'Class:', value: hero.class },
+                    { name: 'Paragon Level:', value: hero.paragonLevel },
+                    { name: 'Highest Solo GR:', value: hero.highestSoloRiftCompleted },
                     {
                         name: 'Gear:', value: `**Helm:** ` + hero.items.head.name + `\n` +
                             `**Amulet:** ` + hero.items.neck.name + `\n` +

@@ -22,16 +22,16 @@ module.exports = async function daccount(message, args, blizz_auth) {
         .setDescription(`Account Info`)
         .setTitle(data.battleTag)
         .addFields(
-            {name: 'Overall HC Paragon:', value: data.paragonLevelHardcore},
-            {name: 'Current Season HC Paragon:', value: data.paragonLevelSeasonHardcore},
+            { name: 'Overall HC Paragon:', value: data.paragonLevelHardcore },
+            { name: 'Current Season HC Paragon:', value: data.paragonLevelSeasonHardcore },
             {
                 name: 'Total Kills:', value:
                     `Softcore: ` + data.kills.monsters + `\n` +
                     `Hardcore: ` + data.kills.hardcoreMonsters + `\n` +
                     `Elites: ` + data.kills.elites
             },
-            {name: 'Heroes:', value: resp},
-            {name: 'Last Played Hero:', value: lastPlayed}
+            { name: 'Heroes:', value: resp },
+            { name: 'Last Played Hero:', value: lastPlayed }
         )
 
     return message.channel.send(embed)

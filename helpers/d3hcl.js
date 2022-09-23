@@ -46,9 +46,9 @@ module.exports = async function dhcl(message, args, blizz_auth) {
                 .setDescription(lbd.title.en_US)
                 .setTitle(`Hardcore Season ${qStr[2]} Leaderboard`)
                 .addFields(
-                    {name: 'Hero:', value: qStr[1]},
-                    {name: 'Rank:', value: lbd.row[i].data[0].number},
-                    {name: 'Rift Level:', value: lbd.row[i].data[1].number}
+                    { name: 'Hero:', value: qStr[1] },
+                    { name: 'Rank:', value: lbd.row[i].data[0].number },
+                    { name: 'Rift Level:', value: lbd.row[i].data[1].number }
                 )
             return message.channel.send(embed)
 
