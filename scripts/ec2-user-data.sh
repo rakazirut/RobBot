@@ -15,7 +15,7 @@ git clone https://github.com/rakazirut/RobBot.git
 # Install AWS cli
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
-sudo ./aws/installlsawx
+sudo ./aws/installls
 rm awscliv2.zip
 
 #Add group membership for the default ec2-user so you can run all docker commands without using the sudo command
