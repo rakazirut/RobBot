@@ -47,6 +47,8 @@ aws ec2 run-instances --launch-template LaunchTemplateId=lt-0dd5918511adde591
 
 aws ec2 describe-instances
 
+aws ec2 terminate-instances --instance-ids <instance-ids>
+
 ## Commands
 1. name: 'Cats, bro.', value: 'ex: !cat'
 
