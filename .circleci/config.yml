@@ -7,8 +7,6 @@ orbs:
 
 jobs:
   verify-deployment:
-    context:
-      - robbot
     executor: aws-cli/default
     steps:
       - aws-cli/install
