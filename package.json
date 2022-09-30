@@ -5,8 +5,9 @@
   "main": "bot.js",
   "author": "RobK",
   "dependencies": {
-    "child_process": "^1.0.2",
+    "aws-cli-js": "^2.2.3",
     "child-process": "^1.0.2",
+    "child_process": "^1.0.2",
     "cron": "^1.8.2",
     "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^12.1.1",
