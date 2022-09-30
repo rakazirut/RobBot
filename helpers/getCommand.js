@@ -6,6 +6,7 @@ const drink = require("./drink.js");
 const com = require("./command.js");
 const meme = require("./mymeme.js");
 const bpt = require("./bpt.js");
+const nba = require("./nba.js");
 const yt = require("./yt.js");
 const remind = require("./remind.js");
 const bbot = require("./bbot.js");
@@ -21,6 +22,9 @@ module.exports = function getChatCommand(args, command, message) {
   switch (command) {
     case "cat":
       cat(message);
+      break;
+    case "nba":
+      nba(message);
       break;
     case "tom":
       return message.channel.send("Hey Tom!");
