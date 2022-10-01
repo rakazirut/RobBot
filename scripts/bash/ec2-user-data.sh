@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE: THIS RUNS ON EC2 INSTANCE ONLY
+
 # Set pwd to /home/user
 cd /home/ec2-user
 
