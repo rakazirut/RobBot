@@ -4,6 +4,8 @@ const logger = require("winston");
 const Discord = require("discord.js");
 const cron = require("cron");
 const auth = require("./auth.json");
+const nba = require("./helpers/data/subreddits/nba.json");
+const topStory = require("./helpers/topstory.js");
 
 // Initalize the discord client instance
 const client = new Discord.Client();
@@ -11,11 +13,21 @@ const client = new Discord.Client();
 // initally created auth.blizzard_bearer_token on boot
 createBlizzToken();
 
+//------------------------Cron Jobs----------------------------------
+
 // fires every day, at 00:00:00 and 12:00:00
 let bAuthRegen = new cron.CronJob("0 0 0,12 * * *", () => {
   createBlizzToken();
 });
 bAuthRegen.start();
+
+// Subreddit Top Stories - NBA - fires every day at 8:00am EST
+let nbaCron = new cron.CronJob("0 8 * * *", () => {
+  topStory(client, nba);
+});
+nbaCron.start();
+
+//-------------------------------------------------------------------
 
 // Client will connect
 client.once("ready", () => {
