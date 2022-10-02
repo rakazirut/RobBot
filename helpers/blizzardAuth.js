@@ -1,7 +1,8 @@
 const auth = require("../auth.json");
 const logger = require("winston");
 
-function fileWrite(fileName, file) {
+function fileWrite(file) {
+  const fileName = "./auth.json";
   const fs = require("fs");
   fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
     if (err) return console.log(err);
@@ -35,7 +36,7 @@ module.exports = function createBlizzToken() {
         let data = JSON.parse(responseData);
         resolve(data);
         file.blizzard_bearer_token = data.access_token; // Store Bearer Token for d3 functions
-        fileWrite(filename, file);
+        fileWrite(file);
       });
     }
     let request = require("https").request(requestOptions, requestHandler);
