@@ -26,7 +26,7 @@ module.exports = function createBlizzToken() {
     let responseData = "";
 
     function requestHandler(res) {
-      const filename = "./auth.json";
+      const filename = "../auth.json";
       const file = require(filename);
       res.on("data", (chunk) => {
         responseData += chunk;
