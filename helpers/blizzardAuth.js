@@ -36,7 +36,7 @@ module.exports = function createBlizzToken() {
         let data = JSON.parse(responseData);
         resolve(data);
         file.blizzard_bearer_token = data.access_token; // Store Bearer Token for d3 functions
-        fileWrite(file);
+        // fileWrite(file);
       });
     }
     let request = require("https").request(requestOptions, requestHandler);
