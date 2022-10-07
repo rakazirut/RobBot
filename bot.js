@@ -1,5 +1,5 @@
 const getChatCommand = require("./helpers/getCommand.js");
-// const createBlizzToken = require("./helpers/blizzardAuth.js");
+const createBlizzToken = require("./helpers/blizzardAuth.js");
 const logger = require("winston");
 const Discord = require("discord.js");
 const cron = require("cron");
