@@ -22,7 +22,7 @@ let bAuthRegen = new cron.CronJob("0 0 0,11 * * *", () => {
 bAuthRegen.start();
 
 // Subreddit Top Stories - NBA - fires every day at 8:00am EST
-let nbaCron = new cron.CronJob("0 12 * * *", () => {
+let nbaCron = new cron.CronJob("0 13 * * *", () => {
   topStory(client, nba);
 });
 nbaCron.start();
