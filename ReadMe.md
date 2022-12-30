@@ -4,6 +4,8 @@ Custom Discord Bot
 
 Built using node.js
 
+Deployed to fly.io
+
 ## Docker Commands
 
  - docker build -t robbot .
