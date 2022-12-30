@@ -4,7 +4,7 @@ Custom Discord Bot
 
 Built using node.js
 
-Deployed to fly.io
+Deployed to Fly.io
 
 ## Docker Commands
 
