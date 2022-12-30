@@ -16,6 +16,8 @@ jobs:
         - uses: Ilshidur/action-discord@master
           with:
             args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed to Fly.io'
-        - run: |
-            echo ${{ secrets.ENV_VAR }} | base64 -d > auth.json
+        - uses: jsdaniell/create-json@1.1.2
+          with:
+            name: "auth.json"
+            json: ${{ secrets.ENV_VAR }}
         - run: flyctl deploy --remote-only
