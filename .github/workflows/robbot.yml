@@ -2,7 +2,7 @@ name: robbot
 on:
   push:
     branches:
-      - main
+      - master
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -15,7 +15,7 @@ jobs:
         - uses: superfly/flyctl-actions/setup-flyctl@master
         - uses: Ilshidur/action-discord@master
           with:
-            args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+            args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed to Fly.io'
         - run: |
             touch auth.json
             echo ${{ secrets.ENV_VAR }} >> auth.json
