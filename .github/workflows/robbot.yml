@@ -17,6 +17,5 @@ jobs:
           with:
             args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed to Fly.io'
         - run: |
-            touch auth.json
-            echo ${{ secrets.ENV_VAR }} >> auth.json
+            echo ${{ secrets.ENV_VAR }} | base64 -d > auth.json
         - run: flyctl deploy --remote-only
